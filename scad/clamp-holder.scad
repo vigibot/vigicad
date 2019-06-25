@@ -83,6 +83,14 @@ module mainBoxHoles () {
             [0,0], [0,-4], [-4,-4]
         ]);
 
+    // Little triangle at the bottom of servo
+    translate ( [ MAIN_X-15.5, MAIN_Y-2.5-2.5, 12.5])
+    rotate( [-90,0,0] )
+    linear_extrude ( height=2.5 )
+        polygon ( [
+            [0,0], [2.5,0], [2.5,-2.5]
+        ]);
+
 // Semi-Traversal on Z
     // Left cut
     translate ( [ 0, 5, 12.5])
