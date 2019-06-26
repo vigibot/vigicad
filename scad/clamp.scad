@@ -14,9 +14,10 @@ PRINTER_NOZE=0.4;
 PRINTER_LAYER=0.2;
 
 PITCHDIAMETER = 10.8;
-NBTOOTH=11.5;
+NBTOOTH=12;
 ALPHA=25; // Pressure angle
 MODULE=(PITCHDIAMETER)/NBTOOTH;
+GEAR_RADIUS=4.14;
 
 THICKNESS=3;
 PINCE_A_HOLE=1.8;
@@ -51,15 +52,12 @@ STAND_w=ARM_W;
 STAND_L=HORN_L;
 
 // Wedge B dimensions
-WB_R = 4;   // Radius
 WB_B = 1;   // Bevel
-WB_T = 6.5; // Thickness
+WB_H = 6.5; // Height
 
 // Wedge A dimensions
-WA_R = 5.5; // Radius
-WA_B = 1.3; // Bevel
+WA_B = 1;   // Bevel
 WA_H = 7.5; // Height
-WA_T = 1.7; // Thickness
 
 $fn=PRECISION;
 
@@ -70,30 +68,32 @@ GEAR_PRM = gearPrm2D (
     0.2
 );
 module gearShape ( thickness=THICKNESS ) {
-    rotate([0,0,72.15])
+    rotate([0,0,0])
         linear_extrude(height=thickness, convexity = 10)
         gear2D (GEAR_PRM);
 }
 
 module gearB() {
-    // Léger décalage pour que les dents passent
-    // Facilement sous wedgeA() élargi
-    thickness = THICKNESS-PRINTER_LAYER;
     difference() {
-        gearShape(thickness);
-        translate([4,5.5,0])
-            cylinder(r=4,h=30,center=true);
-        translate([-3,5,0])
-            cylinder(r=4,h=30,center=true);
+        gearShape();
+        difference() {
+            translate([0,9,0])
+                cylinder(r=8.7,h=30,center=true);   
+            cylinder(r=GEAR_RADIUS,h=31,center=true);
+        }
     }
 }
 
 module gearA() {
     difference() {
-        rotate([0,0,20])
+        rotate([0,0,15])
             gearShape();
-        translate([0,6.30,0])
-            cylinder(r=5,h=30,center=true);
+        difference() {
+            translate([0,9,0])
+                cylinder(r=8,h=30,center=true);   
+            cylinder(r=GEAR_RADIUS,h=31,center=true);
+        }
+
     }
 }
 
@@ -110,10 +110,10 @@ module wedgeA() {
         [0,THICKNESS],
         // Elargissement de la base pour masquer
         //   le bas du bras renforcé
-        [STAND_W/2+0.1,THICKNESS],
-        [WA_R,WA_H-WA_B-WA_T],
-        [WA_R,WA_H-WA_B],
-        [WA_R-WA_B,WA_H],
+        [GEAR_RADIUS,THICKNESS],
+        [GEAR_RADIUS + WA_B,THICKNESS + WA_B],
+        [GEAR_RADIUS + WA_B,WA_H - WA_B],
+        [GEAR_RADIUS,WA_H],
         [0,WA_H]
     ]);
 }
@@ -122,10 +122,10 @@ module wedgeB() {
     rotate_extrude($fn=PRECISION)
     polygon( points=[
         [0,0],
-        [4,0],
-        [4,WB_T-WB_B],
-        [3,WB_T],
-        [0,WB_T]
+        [GEAR_RADIUS,0],
+        [GEAR_RADIUS,WB_H-WB_B],
+        [GEAR_RADIUS -WB_B,WB_H],
+        [0,WB_H]
     ]);
 }
 
@@ -154,7 +154,7 @@ module armSection( w=ARM_W, t=ARM_T, b=ARM_B ) {
 }
 
 module armStandShape() {
-    translate( [0,0,1.6] ) {
+    translate( [0,0,1.9] ) {
     hull() {
         translate( [0,0,STAND_L] )
         linear_extrude(height=0.01)
@@ -256,7 +256,7 @@ translate( [-PITCHDIAMETER/2,0,0] )
 rotate( [0,0,25.3] )
 translate([-0.25,2.6,-1.7])
 rotate( [0,0,-50.4] )
-    import( "../catia/PinceA.stl" );
+    import( "../stl/old/PinceA.stl" );
 
 *#
 color(PINCE_B_COLOR)
@@ -265,5 +265,4 @@ rotate( [0,0,-25.3] )
 translate([0.26,4.19,5.3])
 rotate( [0,180,0] )
 rotate( [0,0,-36] )
-    import( "../catia/PinceB.stl" );
-
+    import( "../stl/old/PinceB.stl" );
