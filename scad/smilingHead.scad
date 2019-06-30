@@ -74,8 +74,8 @@ module servo () {
         cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
     
     //Space for wires
-        translate ( [SERVO_BOX_X /2 - 5, -SERVO_BOX_X /2, 0 ])
-        cube([10, 6, SERVO_BOX_Z], center = true);
+        translate ( [SERVO_BOX_X /2 - 4, -SERVO_BOX_X /2, 0 ])
+        cube([8, 6, SERVO_BOX_Z], center = true);
     
 }
 
