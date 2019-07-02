@@ -33,8 +33,8 @@ SERVO_CENTER_Z = 6.25;
 
 module head () {
     difference() {
-        linear_extrude ( height=HEAD_Z)
-            polygon ( [
+        linear_extrude (height = HEAD_Z)
+            polygon ([
                 [0,0], 
                 [HEAD_BOT_X,0], 
                 [HEAD_BOT_X, HEAD_BOT_Y],
@@ -53,11 +53,13 @@ module head () {
 
 
 module chamfer() {
-    translate ( [ -5, -0.5, HEAD_Z + 0.5 ])
-    rotate( [0,90,0] )
-    linear_extrude ( height=HEAD_TOP_X+10 )
-        polygon ( [
-            [2.2,0], [0,2.2], [0,0]
+    translate ([-5, -0.5, HEAD_Z + 0.5])
+    rotate([0, 90, 0])
+    linear_extrude (height = HEAD_TOP_X + 10)
+        polygon ([
+            [2.2,0], 
+            [0,2.2], 
+            [0,0]
         ]);
 }
 
@@ -66,70 +68,70 @@ module servo () {
     cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
     
     //Servo Stand
-    translate ( [-SERVO_STAND_OFFSET, 0, 0 ])
+    translate ([-SERVO_STAND_OFFSET, 0, 0])
         cube([SERVO_STAND_THICKNESS, SERVO_STAND_LENGTH, SERVO_BOX_Z], center = true);
     
     //Servo Head 
-    translate ( [-SERVO_BOX_X /2 - SERVO_HEAD_HEIGHT/2 + 0.1, SERVO_HEAD_WIDTH/2 - SERVO_BOX_X /2, 0 ])
+    translate ([-SERVO_BOX_X /2 - SERVO_HEAD_HEIGHT/2 + 0.1, SERVO_HEAD_WIDTH/2 - SERVO_BOX_X /2, 0])
         cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
     
     //Space for wires
-        translate ( [SERVO_BOX_X /2 - 4, -SERVO_BOX_X /2, 0 ])
+        translate ([SERVO_BOX_X /2 - 4, -SERVO_BOX_X /2, 0])
         cube([8, 6, SERVO_BOX_Z], center = true);
     
 }
 
-module drillThread ( t=5 ) {
-    cylinder ( r=0.9, h=t, center=true );
+module drillThread (t = 5) {
+    cylinder (r = 0.9, h = t, center = true);
 }
 
-module drillHead ( h=5 ) {
-    cylinder ( r=1.1, h=h, center=true );
+module drillHead (h = 5) {
+    cylinder (r = 1.1, h = h, center = true);
 }
 
-module drillScrew ( h=5, t=10 ) {
-    drillHead ( h=h );
-    drillThread ( t=t );
+module drillScrew (h=5, t=10) {
+    drillHead (h = h);
+    drillThread (t = t);
 }
 
 
 module servoScrewHoles() {
 
     // Stand holes
-    translate ( [ 0, 2.5, SERVO_CENTER_Z]) {
-        rotate( [0,90,0] )
-            drillScrew ( 20, 33 );
+    translate ([0, 2.5, SERVO_CENTER_Z]) {
+        rotate ([0, 90, 0])
+            drillScrew (20, 33);
     }
     
-    translate ( [ 0, 33-2.5, SERVO_CENTER_Z]) {
-        rotate( [0,90,0] )
-            drillScrew ( 20, 33 );
+    translate ([0, 33 - 2.5, SERVO_CENTER_Z]) {
+        rotate ([0, 90, 0])
+            drillScrew (20, 33);
     }
 
     // Counter axis hole
-    translate ( [ 33, 11.1, SERVO_CENTER_Z]) {
-        rotate( [0,90,0] )
-            drillScrew ( 0, 20 );
+    translate ([33, 11.1, SERVO_CENTER_Z]) {
+        rotate([0, 90, 0])
+            drillScrew (0, 20);
     }
 }
 
 module cameraHoles () {
     ENTRAXEA = 27.5;
     ENTRAXEB = 13.5;
-    translate ( [ENTRAXEA/2, ENTRAXEB/2, 0 ])
-        cylinder ( r=1.2, 20, center=true );
-    translate ( [-ENTRAXEA/2, ENTRAXEB/2, 0 ])
-        cylinder ( r=1.2, 20, center=true );
-    translate ( [ENTRAXEA/2, -ENTRAXEB/2, 0 ])
-        cylinder ( r=1.2, 20, center=true );
-    translate ( [-ENTRAXEA/2, -ENTRAXEB/2, 0 ])
-        cylinder ( r=1.2, 20, center=true );
+    translate ([ENTRAXEA/2, ENTRAXEB/2, 0])
+        cylinder (r = 1.2, 20, center = true);
+    translate ([-ENTRAXEA/2, ENTRAXEB/2, 0])
+        cylinder (r = 1.2, 20, center = true);
+    translate ([ENTRAXEA/2, -ENTRAXEB/2, 0])
+        cylinder (r = 1.2, 20, center = true);
+    translate ( [-ENTRAXEA/2, -ENTRAXEB/2, 0])
+        cylinder ( r = 1.2, 20, center = true);
 }
 
 module smile () {
     difference() {
-        cylinder ( r=10, 8, center=true ); 
-        translate ( [0, 6, 0 ])
+        cylinder (r = 10, 8, center = true ); 
+        translate ([0, 6, 0])
             cube([20, 20, 10], center = true);
         
     } 
@@ -138,14 +140,15 @@ module smile () {
 module smilingHead() {
     difference () {
         head();
-        translate ( [HEAD_BOT_X/2, 33/2, SERVO_CENTER_Z])
+        translate ([HEAD_BOT_X/2, 33/2, SERVO_CENTER_Z])
             servo ();
         servoScrewHoles();
-        translate ( [HEAD_BOT_X/2, 28.75, SERVO_CENTER_Z])
+        translate ([HEAD_BOT_X/2, 28.75, SERVO_CENTER_Z])
            cameraHoles ();
-        translate ( [HEAD_BOT_X/2, 15, 12])
+        translate ([HEAD_BOT_X/2, 15, 12])
         smile ();
     }
 }
 
-smilingHead();
+rotate([180, 0, 0])
+    smilingHead();
