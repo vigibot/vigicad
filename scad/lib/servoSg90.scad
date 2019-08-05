@@ -11,6 +11,7 @@
  */
 
 PRECISION = 100;
+MFG = 0.01; // 2 Manifold Guard
 
 $fn = PRECISION;
 
@@ -30,7 +31,7 @@ WIRE_PASS_Y = 3;
 HORN_D=7.10;   // Horn placeholder large axis diameter
 HORN_d=4.2;    // Horn placeholder small axis diameter
 HORN_L=14.00;  // Inter axis distance
-HORN_T=2+0.01;      // Horn placeholder thickness
+HORN_T=2+MFG;      // Horn placeholder thickness
 HORN_AXIS_T=3; // Horn axis thickness
 HORN_AXIS_D=HORN_D; // Horn axis diameter
 

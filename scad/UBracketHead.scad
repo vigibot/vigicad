@@ -13,6 +13,7 @@
 use <lib/servoSg90.scad>
 
 PRECISION=50;
+MFG = 0.01; // 2 Manifold Guard
 
 $fn = PRECISION;
 
@@ -95,7 +96,7 @@ module bevelBar ( h ) {
     // bevel parts that overlap
     linear_extrude( height=h ) {
         polygon ( [
-            [0,0], [0,-BEVEL], [-BEVEL,0], [0,0]
+            [MFG,MFG], [MFG,-BEVEL], [-BEVEL,MFG], [MFG,MFG]
         ]);
     }
 }
@@ -122,69 +123,73 @@ module makeShapes() {
 
 }
 
-difference() {
+module uBracketHead() {
+    difference() {
 
-// Render all positive shapes before removing negative ones
-    makeShapes();
+    // Render all positive shapes before removing negative ones
+        makeShapes();
 
-// Negative shape: Final beveling
-    union() {
-        // Bevels aligned on X
-        translate( [-MAIN_W/2,U_OUTSIDE_L/2,0] )
-            rotate( [0,90,0] )
-            bevelBar(MAIN_W);
-        translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
-            rotate( [0,90,0] )
-            mirror( [0,1,0] )
-            bevelBar(MAIN_W);
+    // Negative shape: Final beveling
+        union() {
+            // Bevels aligned on X
+            translate( [-MAIN_W/2,U_OUTSIDE_L/2,0] )
+                rotate( [0,90,0] )
+                bevelBar(MAIN_W);
+            translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
+                rotate( [0,90,0] )
+                mirror( [0,1,0] )
+                bevelBar(MAIN_W);
 
-        // Bevels aligned on Y
-        translate( [MAIN_W/2,-U_OUTSIDE_L/2,0] )
-            rotate( [-90,0,0] )
-            bevelBar(U_OUTSIDE_L);
-        translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
-            rotate( [-90,0,0] )
-            mirror( [1,0,0] )
-            bevelBar(U_OUTSIDE_L);
+            // Bevels aligned on Y
+            translate( [MAIN_W/2,-U_OUTSIDE_L/2,0] )
+                rotate( [-90,0,0] )
+                bevelBar(U_OUTSIDE_L);
+            translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
+                rotate( [-90,0,0] )
+                mirror( [1,0,0] )
+                bevelBar(U_OUTSIDE_L);
 
-        // Bevels aligned on Z
-        translate( [MAIN_W/2,U_OUTSIDE_L/2,0] )
-            bevelBar(AXIS_POS_Z);
-        translate( [-MAIN_W/2,U_OUTSIDE_L/2,0] )
-            mirror( [1,0,0] )
-            bevelBar(AXIS_POS_Z);
-        translate( [MAIN_W/2,-U_OUTSIDE_L/2,0] )
-            mirror( [0,1,0] )
-            bevelBar(AXIS_POS_Z);
-        translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
-            mirror( [0,1,0] )
-            mirror( [1,0,0] )
-            bevelBar(AXIS_POS_Z);
-    }
+            // Bevels aligned on Z
+            translate( [MAIN_W/2,U_OUTSIDE_L/2,0] )
+                bevelBar(AXIS_POS_Z);
+            translate( [-MAIN_W/2,U_OUTSIDE_L/2,0] )
+                mirror( [1,0,0] )
+                bevelBar(AXIS_POS_Z);
+            translate( [MAIN_W/2,-U_OUTSIDE_L/2,0] )
+                mirror( [0,1,0] )
+                bevelBar(AXIS_POS_Z);
+            translate( [-MAIN_W/2,-U_OUTSIDE_L/2,0] )
+                mirror( [0,1,0] )
+                mirror( [1,0,0] )
+                bevelBar(AXIS_POS_Z);
+        }
 
-// Negative shape: Horizontal servo placeholder
-    translate( [
-        0,
-        U_INSIDE_L/2-BEVEL-HEAD_BORDER_W,
-        AXIS_POS_Z+servoAxisPosY()
-    ])
-    rotate( [0,0,90] )
-    rotate( [90,0,0] ) {
-        servo(180);
-        servoCounterAxisHole(3,3,2.1);
-    }
+    // Negative shape: Horizontal servo placeholder
+        translate( [
+            0,
+            U_INSIDE_L/2-BEVEL-HEAD_BORDER_W,
+            AXIS_POS_Z+servoAxisPosY()
+        ])
+        rotate( [0,0,90] )
+        rotate( [90,0,0] ) {
+            servo(180);
+            servoCounterAxisHole(3,3,2+MFG);
+        }
 
-// Negative shape: Vertical servo placeholder
-    translate( [
-        0,
-        servoAxisPosY(),
-        -servoSizeX()
-    ])
-    rotate( [0,90,0] ) {
-        servo(0,2);
-        servoCounterAxisHole(3,3,2.1);
+    // Negative shape: Vertical servo placeholder
+        translate( [
+            0,
+            servoAxisPosY(),
+            -servoSizeX()
+        ])
+        rotate( [0,90,0] ) {
+            servo(0,2);
+            servoCounterAxisHole(3,3,2+MFG);
+        }
     }
 }
+
+uBracketHead();
 
 // ------------------------------
 //
