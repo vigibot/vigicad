@@ -13,15 +13,16 @@
 use <lib/servoSg90.scad>
 use <lib/uBracket.scad>
 
-module uBracketHeadServo() {
+module uBracketHeadServo(bodyRotation=0) {
     translate( [
         0,
         servoAxisPosY(),
         -servoSizeX()
     ])
-    rotate( [0,90,0] ) {
-        servo(0,2);
-        servoCounterAxisHole(3,3,2);
+    rotate( [0,90,0] )
+    difference() {
+        servo(0,2,bodyRotation=bodyRotation);
+        servoScrewHoles( bodyRotation=bodyRotation );
     }
 }
 

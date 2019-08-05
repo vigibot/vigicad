@@ -131,7 +131,7 @@ module uBracketServoShapes(axisZ) {
 
 }
 
-module uBracketServo( axisZ=AXIS_POS_Z ) {
+module uBracketServo( axisZ=AXIS_POS_Z, bodyRotation=0 ) {
     translate( [
         0,
         U_INSIDE_L/2-BEVEL-HEAD_BORDER_W,
@@ -139,7 +139,10 @@ module uBracketServo( axisZ=AXIS_POS_Z ) {
     ])
     rotate( [0,0,90] )
     rotate( [90,0,0] ) {
-        servo(180);
+        difference() {
+            servo(180,bodyRotation=bodyRotation);
+            servoScrewHoles( bodyRotation=bodyRotation );
+        }
         servoCounterAxisHole(3,3,2);
     }
 }
@@ -197,6 +200,6 @@ module uBracket( axisZ=AXIS_POS_Z ) {
 // ------------------------------
 
  uBracket( 22 );
-%uBracketServo( 22 );
+%uBracketServo( 22, 40 );
 
 

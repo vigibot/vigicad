@@ -169,49 +169,59 @@ module makeBoxes() {
     gearBox();
 }
 
-difference() {
-    makeBoxes();
+module clampHolder() {
+    difference() {
+        makeBoxes();
 
-// Screws on Y
-    // Clamp screws
-    translate ( [ (MAIN_X-GEAR_BOX_X)/2+6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
-        rotate( [90,0,0] )
-            drillScrew ( 10, 40 );
-    }
-    translate ( [ (MAIN_X+GEAR_BOX_X)/2-6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
-        rotate( [90,0,0] )
-            drillScrew ( 10, 40 );
-    }
+    // Screws on Y
+        // Clamp screws
+        translate ( [ (MAIN_X-GEAR_BOX_X)/2+6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
+            rotate( [90,0,0] )
+                drillScrew ( 10, 40 );
+        }
+        translate ( [ (MAIN_X+GEAR_BOX_X)/2-6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
+            rotate( [90,0,0] )
+                drillScrew ( 10, 40 );
+        }
 
-    // Servo handle screws
-    translate ( [ 2.5, MAIN_Y, 6.25]) {
-        rotate( [90,0,0] )
-            drillScrew ( 20, 36 );
-    }
-    translate ( [ MAIN_X-2.5, MAIN_Y, 6.25]) {
-        rotate( [90,0,0] )
-            drillScrew ( 20, 36 );
-    }
+        // Servo handle screws
+        translate ( [ 2.5, MAIN_Y, 6.25]) {
+            rotate( [90,0,0] )
+                drillScrew ( 20, 36 );
+        }
+        translate ( [ MAIN_X-2.5, MAIN_Y, 6.25]) {
+            rotate( [90,0,0] )
+                drillScrew ( 20, 36 );
+        }
 
-// Screws on X
-    translate ( [ 0, 2.5, MAIN_Z-6.25]) {
-        rotate( [0,90,0] )
-            drillScrew ( 20, 36 );
-    }
-    translate ( [ 0, MAIN_Y-2.5, MAIN_Z-6.25]) {
-        rotate( [0,90,0] )
-            drillScrew ( 20, 36 );
-    }
+    // Screws on X
+        translate ( [ 0, 2.5, MAIN_Z-6.25]) {
+            rotate( [0,90,0] )
+                drillScrew ( 20, 36 );
+        }
+        translate ( [ 0, MAIN_Y-2.5, MAIN_Z-6.25]) {
+            rotate( [0,90,0] )
+                drillScrew ( 20, 36 );
+        }
 
-    translate ( [ MAIN_X, 11.1, MAIN_Z-6.25]) {
-        rotate( [0,90,0] )
-            drillScrew ( 0, 20 );
-    }
-    translate ( [ MAIN_X, MAIN_Y-11.1, MAIN_Z-6.25]) {
-        rotate( [0,90,0] )
-            drillScrew ( 0, 20 );
+        translate ( [ MAIN_X, 11.1, MAIN_Z-6.25]) {
+            rotate( [0,90,0] )
+                drillScrew ( 0, 20 );
+        }
+        translate ( [ MAIN_X, MAIN_Y-11.1, MAIN_Z-6.25]) {
+            rotate( [0,90,0] )
+                drillScrew ( 0, 20 );
+        }
     }
 }
+
+
+// ------------------------------
+//
+//   Debug section
+//
+// ------------------------------
+clampHolder();
 
 
 

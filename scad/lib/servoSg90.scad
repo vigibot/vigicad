@@ -87,8 +87,7 @@ module screwM2 ( lt=10, lp=5, lh=2 ) {
     screwMx( M2_DS, M2_DPL, M2_DH, lt, lp, lh );
 }
 
-module servoHornHole( r=0 ) {
-    translate( [-SERVO_BOX_X/2-SERVO_HEAD_HEIGHT-HORN_T/2-HORN_AXIS_T,-servoAxisPosY(),0] )
+module servoHorn( r=0 ) {
     rotate([r,0,0])
     rotate([0,90,0])
     union() {
@@ -102,34 +101,39 @@ module servoHornHole( r=0 ) {
     }
 }
 
-module servo ( hornRotation=0, hornNbArm=1 ) {
+module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
 
-    translate( [-SERVO_BOX_X/2,0,0] ) {
-        // Servo Box
-        cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
+    translate( [-SERVO_BOX_X,0,0] )
+    translate( [-SERVO_HEAD_HEIGHT-HORN_T/2-HORN_AXIS_T,-servoAxisPosY(),0] )
+        rotate([bodyRotation,0,0]) {
 
-        // Servo Stand
-        translate ([SERVO_BOX_X/2-SERVO_STAND_OFFSET, 0, 0])
-            cube([SERVO_STAND_THICKNESS, SERVO_STAND_LENGTH, SERVO_BOX_Z], center = true);
+            translate( [SERVO_HEAD_HEIGHT+HORN_T/2+HORN_AXIS_T,servoAxisPosY(),0] ) {
+                // Servo Box
+                translate ([SERVO_BOX_X/2, 0, 0])
+                    cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
 
-        // Servo Head 
-        translate ([
-            -(SERVO_BOX_X+SERVO_HEAD_HEIGHT)/2,
-            (SERVO_HEAD_WIDTH-SERVO_BOX_X)/2,
-            0])
-            cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
+                // Servo Stand
+                translate ([SERVO_BOX_X-SERVO_STAND_OFFSET, 0, 0])
+                    cube([SERVO_STAND_THICKNESS, SERVO_STAND_LENGTH, SERVO_BOX_Z], center = true);
 
-        // Space for wires
-        translate ([
-            (SERVO_BOX_X-WIRE_PASS_X)/2,
-            -(SERVO_BOX_X+WIRE_PASS_Y)/2,
-            0])
-            cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                // Servo Head 
+                translate ([
+                    -SERVO_HEAD_HEIGHT/2,
+                    (SERVO_HEAD_WIDTH-SERVO_BOX_X)/2,
+                    0])
+                    cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
 
-        // Required Horn
-        for ( i=[0:360/(hornNbArm):360] )
-            servoHornHole(hornRotation + i);
+                // Space for wires
+                translate ([
+                    SERVO_BOX_X-WIRE_PASS_X/2,
+                    -(SERVO_BOX_X+WIRE_PASS_Y)/2,
+                    0])
+                    cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+            }
 
+            // Required Horn
+                for ( i=[0:360/(hornNbArm):360] )
+                    servoHorn(hornRotation + i - bodyRotation);
     }
 }
 
@@ -137,15 +141,19 @@ module servo ( hornRotation=0, hornNbArm=1 ) {
 //   h: Can't be changed
 //   H: Passing hole length after screwing hole
 DEFAULT_PASSING_L = 0.1+SERVO_HEAD_HEIGHT+SERVO_BOX_X + servoScrewPosX();
-module servoScrewHoles ( H=DEFAULT_PASSING_L ) {
+module servoScrewHoles ( H=DEFAULT_PASSING_L, bodyRotation=0 ) {
     offset_x = servoScrewPosX();
     offset_y = servoScrewPosY();
-    translate ([offset_x, +offset_y, 0])
-        rotate ([0, 90, 0])
-        screwM2Tight (6,H);
-    translate ([offset_x, -offset_y, 0])
-        rotate ([0, 90, 0])
-        screwM2Tight (6,H);
+    translate( [0,-servoAxisPosY(),0] )
+    rotate([bodyRotation,0,0])
+        translate( [0,servoAxisPosY(),0] ) {
+            translate ([offset_x, +offset_y, 0])
+                rotate ([0, 90, 0])
+                screwM2Tight (6,H);
+            translate ([offset_x, -offset_y, 0])
+                rotate ([0, 90, 0])
+                screwM2Tight (6,H);
+        }
 }
 
 // Counter axis hole
@@ -160,13 +168,21 @@ module servoCounterAxisHole ( ls=20, lp=0, lh=2 ) {
         screwM2Tight (ls,lp,lh+MFG);
 }
 
+
+// ------------------------------
+//
+//   Debug section
+//
+// ------------------------------
+
+DEMO_BODY_ROTATION=50;
 difference () {
     color( "gold" )
-        servo( 10, 3 );
+        servo( 20, 3, DEMO_BODY_ROTATION );
 
-    servoScrewHoles();
+    servoScrewHoles( bodyRotation=DEMO_BODY_ROTATION );
     servoCounterAxisHole(5,5);
 }
 
-% servoScrewHoles();
+% servoScrewHoles( bodyRotation=DEMO_BODY_ROTATION );
 % servoCounterAxisHole(5,5);

@@ -89,6 +89,12 @@ module uBracketClampHoles() {
         screwM2 ( 0, 10, 2 );
 }
 
+module uBracketClampServo(bodyRotation=0) {
+    translate( [ -TOP_POST_ROT_X, 0, -BOT_POST_ROT_Z ])
+    rotate([0,U_ANGLE,0])
+        uBracketServo(AXIS_POS_Z,bodyRotation=bodyRotation+180);
+}
+
 module uBracketClamp() {
     difference() {
         uBracketClampShapes();
@@ -102,14 +108,8 @@ module uBracketClamp() {
 //
 // ------------------------------
 
-uBracketClamp();
-
-%
-translate( [ -TOP_POST_ROT_X, 0, -BOT_POST_ROT_Z ])
-rotate([0,U_ANGLE,0])
-    uBracketServo(AXIS_POS_Z);
-
-%
-uBracketClampHoles();
+ uBracketClamp();
+%uBracketClampServo();
+%uBracketClampHoles();
 
 
