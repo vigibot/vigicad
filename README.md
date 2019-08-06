@@ -2,9 +2,6 @@
 
 https://www.vigibot.com
 
-# All pieces assembled for the standard vigibot
+# All pieces assembled for the standard Vigibot
 
-![Standard vigibot](https://github.com/vigibot/vigicad/blob/master/img/standardVigibot.png)
-
-
-
+![Standard Vigibot](https://github.com/vigibot/vigicad/blob/master/png/standard_vigibot.png)
