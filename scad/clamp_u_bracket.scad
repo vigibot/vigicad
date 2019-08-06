@@ -10,8 +10,8 @@
  * Author:      Gilles Bouissac
  */
 
-use <lib/servoSg90.scad>
-use <lib/uBracket.scad>
+use <lib/servo_sg90.scad>
+use <lib/u_bracket.scad>
 
 AXIS_POS_Z = 29;
 U_ANGLE    = 45;
