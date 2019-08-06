@@ -1,14 +1,14 @@
 PRECISION = 100;
 
 // Enable option you need
-MOTORSOPTION = true; 
-RASPBERRYPIOPTION = true;
-TOOLOPTION = true;
-OBLONGOPTION = true;
-MOTORPCBOPTION = true; 
-FANOPTION = false; 
+MOTORSOPTION = true;      // For middle plate
+OBLONGOPTION = true;      // For middle plate
+MOTORPCBOPTION = true;    // For middle plate
+RASPBERRYPIOPTION = true; // For middle and top plates
+TOOLOPTION = true;        // For middle and top plates
+FANOPTION = false;        // For top plate
 
-// set DXF true if you need to generate .dxf file 
+// Set DXF true if you need to generate .dxf file
 DXF = false;
 
 MIRRORX = 1;
@@ -36,29 +36,28 @@ RASPBERRYPIFOURHOLES = [
 ];
 
 MOTORPCBFOURHOLES = [
- [M25DIAMETER, 0,    10  ], // Motors PCB
+ [M25DIAMETER, 0, 10],      // Motors PCB
 ];
 
 OBLONGFOURHOLES = [
- [5,           0.5,  24.5], // Oblong A
- [5,           1.5,  24.5], // Oblong B
- [5,           2.5,  24.5], // Oblong C
+ [5, 0.5, 24.5],            // Oblong A
+ [5, 1.5, 24.5],            // Oblong B
+ [5, 2.5, 24.5],            // Oblong C
 ];
 
 MOTORSFOURHOLES = [
- [M2DIAMETER,  38,   16.5], // Motors A
- [M2DIAMETER,  20,   16.5], // Motors B
+ [M2DIAMETER, 38, 16.5],    // Motors A
+ [M2DIAMETER, 20, 16.5],    // Motors B
 ];
 
 TOOLFOURHOLES = [
- [M2DIAMETER,  38,   0   ], // Tools A
- [M2DIAMETER,  44.5, 12  ]  // Tools B
+ [M2DIAMETER, 38, 0],       // Tools A
+ [M2DIAMETER, 44.5, 12]     // Tools B
 ];
 
-
 FANSIMPLEHOLES = [
- [5,    18, -8], 
- [28.5,  0,  0]   
+ [5, 18, -8],
+ [28.5, 0, 0]
 ];
 
 FANFOURHOLES = [
@@ -109,11 +108,11 @@ module holesArray() {
   if(RASPBERRYPIOPTION)
    for(holeParams = RASPBERRYPIFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
-   
+
   if(MOTORSOPTION)
    for(holeParams = MOTORSFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
-   
+
   if(TOOLOPTION)
    for(holeParams = TOOLFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
@@ -121,11 +120,11 @@ module holesArray() {
   if(OBLONGOPTION)
    for(holeParams = OBLONGFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
-   
+
   if(MOTORPCBOPTION)
    for(holeParams = MOTORPCBFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
-   
+
   if(FANOPTION)
    for(holeParams = FANFOURHOLES)
     holeShape(holeParams[0], holeParams[1], holeParams[2]);
@@ -160,9 +159,10 @@ module plate() {
  }
 }
 
-if (DXF)
- projection(cut = true) plate(); 
-else 
+if(DXF)
+ projection(cut = true)
+  plate();
+else
  plate();
 
 translate([PLATEX - 5, PLATEY - 5, 0])
