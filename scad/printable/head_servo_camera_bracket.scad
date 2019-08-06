@@ -7,6 +7,7 @@
  *   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * 
  * Description: OpenSCAD design for the smiling pan & tilt smiling head, part of the Vigibot robot "Minus"
+ * Design:      Quillès Jonathan / Pascal Piazzalungua
  * Author:      Quillès Jonathan
  */
 

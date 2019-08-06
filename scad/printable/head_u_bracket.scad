@@ -7,11 +7,12 @@
  *   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * 
  * Description: OpenSCAD design for vigibot U bracket for robot head
+ * Design:      Quillès Jonathan / Pascal Piazzalungua
  * Author:      Gilles Bouissac
  */
 
-use <lib/servo_sg90.scad>
-use <lib/u_bracket.scad>
+use <../lib/servo_sg90.scad>
+use <../lib/u_bracket.scad>
 
 module uBracketHeadServo(bodyRotation=0) {
     translate( [

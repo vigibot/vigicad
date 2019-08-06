@@ -10,7 +10,7 @@
  * Author:      Gilles Bouissac
  */
 
-use <servoSg90.scad>
+use <servo_sg90.scad>
 
 PRECISION=50;
 MFG = 0.01; // 2 Manifold Guard

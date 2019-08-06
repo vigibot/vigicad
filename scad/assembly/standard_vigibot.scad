@@ -10,23 +10,26 @@
  * Author:      Gilles Bouissac
  */
 
-use <../plate-with-holes.scad>
-use <../uBracketHead.scad>
-use <../uBracketClamp.scad>
-use <../smilingHead.scad>
-use <../clamp-holder.scad>
-use <../clamp.scad>
-use <../lib/uBracket.scad>
-use <../lib/servoSg90.scad>
+use <../printable/plate_middle.scad>
+use <../printable/plate_top_fan.scad>
+use <../printable/head_u_bracket.scad>
+use <../printable/head_servo_camera_bracket.scad>
+use <../printable/clamp_u_bracket.scad>
+use <../printable/clamp_servo_bracket.scad>
+use <../printable/clamp_finger_a_b.scad>
+use <../lib/u_bracket.scad>
+use <../lib/servo_sg90.scad>
+
+$fn=100;
 
 PLATE_DIST    = 50;
 HEAD_OFFSET_Z = 15;
 
 translate( [0,0,0] )
-    plate();
+    plateTopFan();
 
 translate( [0,0,-PLATE_DIST] )
-    plate();
+    plateMiddle();
 
 translate( [54,0,HEAD_OFFSET_Z] ) {
     uBracketHead();
