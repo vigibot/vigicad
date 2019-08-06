@@ -7,8 +7,11 @@
  *   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * 
  * Description: OpenSCAD design for servo and servo fixation holes
- * Author:      Quillès Jonathan/Gilles Bouissac
+ * Design:      Quillès Jonathan / Pascal Piazzalungua
+ * Author:      Quillès Jonathan / Gilles Bouissac
  */
+
+use <hardware_shop.scad>
 
 PRECISION = 100;
 MFG = 0.01; // 2 Manifold Guard
@@ -41,11 +44,6 @@ SERVO_INTER_SCREW = 28;
 // Distance from center to axis
 SERVO_AXIS_Y = 5.4;
 
-M2_DS  = 1.8;  // Thread diameter
-M2_DPT = 2.2;  // Passing diameter tight
-M2_DPL = 2.5;  // Passing diameter loose
-M2_DH  = 4.0;  // Head diameter
-
 // Dimension accessors
 function servoBoxSizeX()   = SERVO_BOX_X;
 function servoBoxSizeY()   = SERVO_BOX_X;
@@ -61,31 +59,6 @@ function servoAxisPosX()   = 0;
 function servoAxisPosY()   = SERVO_AXIS_Y;
 function servoScrewPosX()  = -SERVO_STAND_OFFSET+SERVO_STAND_THICKNESS/2;
 function servoScrewPosY()  = SERVO_INTER_SCREW/2;
-
-// drill any Mx screw:
-//   dt: Thread diameter
-//   dp: Passing diameter
-//   dh: Thread diameter
-//   lt: Thread length (from z=0 to z+)
-//   lp: Passing length (from z=0 to z-)
-//   lh: Head length (from z=-lp to z-)
-module screwMx ( ds, dp, dh, lt=10, lp=5, lh=2 ) {
-    translate( [0,0,lt/2] )
-        cylinder (r = ds/2, h = lt+0.1, center = true);
-    translate( [0,0,-lp/2] )
-        cylinder (r = dp/2, h = lp+0.1, center = true);
-    translate( [0,0,-lp-lh/2] )
-        cylinder (r = dh/2, h = lh, center = true);
-}
-
-// drill a M2 screw with tight passage
-module screwM2Tight ( lt=10, lp=5, lh=2 ) {
-    screwMx( M2_DS, M2_DPT, M2_DH, lt, lp, lh );
-}
-// drill a M2 screw with loose passage
-module screwM2 ( lt=10, lp=5, lh=2 ) {
-    screwMx( M2_DS, M2_DPL, M2_DH, lt, lp, lh );
-}
 
 module servoHorn( r=0 ) {
     rotate([r,0,0])

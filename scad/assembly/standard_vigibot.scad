@@ -10,6 +10,7 @@
  * Author:      Gilles Bouissac
  */
 
+use <../printable/plate_bottom.scad>
 use <../printable/plate_middle.scad>
 use <../printable/plate_top_fan.scad>
 use <../printable/head_u_bracket.scad>
@@ -17,19 +18,30 @@ use <../printable/head_servo_camera_bracket.scad>
 use <../printable/clamp_u_bracket.scad>
 use <../printable/clamp_servo_bracket.scad>
 use <../printable/clamp_finger_a_b.scad>
+use <../printable/usb_bracket.scad>
 use <../lib/u_bracket.scad>
 use <../lib/servo_sg90.scad>
 
 $fn=100;
 
-PLATE_DIST    = 50;
+PLATE_MID_Z   = -50;
+PLATE_BOT_Z   = -65;
 HEAD_OFFSET_Z = 15;
 
 translate( [0,0,0] )
     plateTopFan();
 
-translate( [0,0,-PLATE_DIST] )
+translate( [0,0,PLATE_MID_Z] )
     plateMiddle();
+
+translate( [0,0,PLATE_BOT_Z] )
+    plateBottom();
+
+
+translate( [-47,0,3] ) {
+    rotate( [0,0,180] )
+    usbBracket();
+}
 
 translate( [54,0,HEAD_OFFSET_Z] ) {
     uBracketHead();
@@ -45,7 +57,7 @@ translate( [47.75,-32/2,HEAD_OFFSET_Z+10.85] ) {
     smilingHead();
 }
 
-translate( [47.5,0,-PLATE_DIST+1.5] ) {
+translate( [47.5,0,PLATE_MID_Z+1.5] ) {
     uBracketClamp();
     color("#9cF", 0.8)
     uBracketClampServo(-45);
@@ -67,6 +79,6 @@ translate( [83.75,0,-18.75] ) {
 }
 
 color("white")
-translate( [83.75,0,-PLATE_DIST-3] )
+translate( [83.75,0,PLATE_MID_Z-3] )
 rotate( [0,0,-90] )
     clamp();

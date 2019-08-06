@@ -1,3 +1,0 @@
-plate_bottom.scad
-usb_bracket.scad
-photoresistor_cap.scad

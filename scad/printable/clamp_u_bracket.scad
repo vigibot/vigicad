@@ -13,6 +13,7 @@
 
 use <../lib/servo_sg90.scad>
 use <../lib/u_bracket.scad>
+use <../lib/hardware_shop.scad>
 
 AXIS_POS_Z = 29;
 U_ANGLE    = 45;
