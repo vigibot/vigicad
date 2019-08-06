@@ -1,3 +1,0 @@
-plate_bottom.scad from plate_bottom.skp
-usb_bracket.scad from usb_bracket.skp
-photoresistor_cap.scad from photoresistor_cap.skp
