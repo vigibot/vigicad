@@ -3,6 +3,7 @@ Refresh from the Gilles Bouissac OpenSCAD version :
 clamp_u_bracket*
 head_u_bracket*
 
+head_pan_servo_braket*
 plate_bottom*
 usb_bracket*
 photoresistor_cap*
