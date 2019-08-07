@@ -1,9 +1,0 @@
-Refresh from the Gilles Bouissac OpenSCAD version :
-
-clamp_u_bracket.stl
-head_u_bracket.stl
-
-head_pan_servo_braket.stl
-plate_bottom.stl
-usb_bracket.stl
-photoresistor_cap.stl
