@@ -11,7 +11,6 @@
  * Author:      Gilles Bouissac
  */
 
-use <../lib/servo_sg90.scad>
 use <../lib/u_bracket.scad>
 use <../lib/hardware_shop.scad>
 
