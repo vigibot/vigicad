@@ -87,7 +87,7 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
 
                 // Servo Stand
                 translate ([SERVO_BOX_X-SERVO_STAND_OFFSET, 0, 0])
-                    cube([SERVO_STAND_THICKNESS+2*MFG, SERVO_STAND_LENGTH+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
+                    cube([servoStandSizeX(), servoStandSizeY(), servoStandSizeZ()], center = true);
 
                 // Servo Head 
                 translate ([

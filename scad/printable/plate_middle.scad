@@ -19,7 +19,7 @@ use <../lib/plates.scad>
 
 module plateMiddle() {
     plate(
-        [
+        mirrorXYHoles = [
             getMotorsFourHoles(),
             getRaspberryFourHoles(),
             getMotorPcbFourHoles(),
@@ -33,4 +33,9 @@ module plateMiddle() {
 //                 Showcase
 // ----------------------------------------
 plateMiddle($fn=100);
+
+%
+translate( [0,0,0] )
+rotate( [0,0,0] )
+    import( "../../stl/plate_middle.stl" );
 

@@ -11,29 +11,80 @@
  * Author:      Gilles Bouissac
  */
 
-HOLEMARGIN = 0.5;
-M2DIAMETER = 2 + HOLEMARGIN;
+use <extensions.scad>
+use <bevel.scad>
+use <hardware_shop.scad>
+
+HOLEMARGIN  = 0.5;
+M2DIAMETER  = 2 + HOLEMARGIN;
 M25DIAMETER = 2.5 + HOLEMARGIN;
-M3DIAMETER = 3 + HOLEMARGIN;
+M3DIAMETER  = 3 + HOLEMARGIN;
+
+MAINPLATE_SX  = 95;
+MAINPLATE_SY  = 60;
+MAINPLATE_SZ  = 3;
+
+HP_PLATE_SX  = 26 ;
+HP_PLATE_SY  = 60 ;
+HP_PLATE_SZ  = 3 ;
+HP_PLATE_DX  = 12.5; // offset of this plate from main plate
+HP_PLATE_X   = getMainPlateSX()/2 - HP_PLATE_SX + HP_PLATE_DX;
+
+RADIUSCORNERS = 5;
 
 // ----------------------------------------
 //                  API
 // ----------------------------------------
 
-// Build plate with given holes lists
-// - fourHoles:   Drill given holes 4 times (double mirroring)
-// - singleHoles: Drill given holes once
-// - dxf:         Generates .dxf file
-module plate( fourHoles=[], singleHoles=[], dxf=false ) {
-    if( dxf )
-        projection(cut = true)
-            plateImpl( fourHoles, singleHoles );
-    else
-        plateImpl( fourHoles, singleHoles);
+function getMainPlateSX()   = MAINPLATE_SX;
+function getMainPlateSY()   = MAINPLATE_SY;
+function getMainPlateSZ()   = MAINPLATE_SZ;
 
-    translate([PLATEX - 5, PLATEY - 5, 0])
-        %cube([10, 10, PLATEZ], center = true);
+function getHeadPanPlateSX()   = HP_PLATE_SX;
+function getHeadPanPlateSY()   = HP_PLATE_SY;
+function getHeadPanPlateSZ()   = HP_PLATE_SZ;
+function getHeadPanPlateX()    = HP_PLATE_X;
+
+function getRadiusCorners() = RADIUSCORNERS;
+
+
+// Main plate with given holes lists
+// - mirrorXYHoles:   Drill given holes 4 times (double mirroring)
+// - noMirrorHoles:   Drill given holes once
+module plate ( mirrorXYHoles=[], noMirrorHoles=[] ) {
+    difference () {
+        // Row shape
+        mirrorXY()
+            plateShape( MAINPLATE_SX/2, MAINPLATE_SY/2, MAINPLATE_SZ, RADIUSCORNERS );
+
+        // Bevels
+        mirrorXY()
+            plateBevel( MAINPLATE_SX/2, MAINPLATE_SY/2, MAINPLATE_SZ, RADIUSCORNERS );
+
+        // Holes with no mirroring
+        screwArray ( flatten(noMirrorHoles) );
+
+        // Holes with double mirroring
+        mirrorXY()
+            screwArray( flatten(mirrorXYHoles) );
+    }
 }
+
+module headPanPlate ( mirrorXHoles=[], noMirrorHoles=[] ) {
+    difference() {
+        headPanPlateShape();
+        headPanPlateBevel();
+        headPanPlateExtrude();
+
+        // Holes with no mirroring
+        screwArray ( flatten(noMirrorHoles) );
+
+        // Holes with X mirroring
+        mirrorX()
+            screwArray( flatten(mirrorXHoles) );
+    }
+}
+
 
 // Get Vigibot motors holes
 function getMotorsFourHoles() = [
@@ -80,111 +131,85 @@ function getFanSimpleHoles() = [
 //            Implementation
 // ----------------------------------------
 
-P_MOTORS = 0;
-P_OBLONG = 1;
-P_MOTORPCB = 2;
-P_PI = 3;
-P_TOOL = 4;
-P_FAN = 5;
-P_DXF = 6;
-
-MIRRORX = 1;
-MIRRORY = 1;
-PLATEX = 95 / (MIRRORX ? 2 : 1);
-PLATEY = 60 / (MIRRORY ? 2 : 1);
-PLATEZ = 3;
-
-RADIUSCORNERS = 5;
-RADIUSBEVEL = 0.5;
-
-BEVELTYPENONE = 0;
-BEVELTYPESPHERE = 1;
-BEVELTYPECONE = 2;
-BEVELTYPE = BEVELTYPECONE;
-
-module quadPlate() {
-    intersection() {
-        translate([PLATEX / 2, PLATEY / 2, 0]) {
-            cube([PLATEX, PLATEY, PLATEZ], center = true);
-        }
-
-        minkowski() {
-            translate([
-                (PLATEX - RADIUSCORNERS) / 2,
-                (PLATEY - RADIUSCORNERS) / 2,
-                0
-            ]) {
-                cube([PLATEX - RADIUSCORNERS,
-                PLATEY - RADIUSCORNERS,
-                PLATEZ - RADIUSBEVEL * 2], center = true);
-            }
-
-            minkowski() {
-                cylinder(r = RADIUSCORNERS - RADIUSBEVEL, h = 0.0001, center = true);
-                if(BEVELTYPE == BEVELTYPESPHERE)
-                    sphere(r = RADIUSBEVEL);
-                else if(BEVELTYPE == BEVELTYPECONE)
-                    union() {
-                        cylinder(r1 = RADIUSBEVEL, r2 = 0, h = RADIUSBEVEL, center = false);
-                        translate([0, 0, -RADIUSBEVEL])
-                            cylinder(r1 = 0, r2 = RADIUSBEVEL, h = RADIUSBEVEL, center = false);
-                    }
-                else
-                    cylinder(r1 = RADIUSBEVEL, r2 = RADIUSBEVEL, h = RADIUSBEVEL * 2, center = true);
-            }
-        }
+// Quater plate shape
+module plateShape( platex, platey, platez, radius ) {
+    sx = platex - radius;
+    sy = platey - radius;
+    sz = platez;
+    translate( [ sx/2, sy/2, 0 ] ) {
+        cube([sx, sy, sz], center = true );
+    }
+    translate( [ sx+radius/2, sy/2, 0 ] ) {
+        cube([radius, sy, sz], center = true );
+    }
+    translate( [ sx/2, sy+radius/2, 0 ] ) {
+        cube([sx, radius, sz], center = true );
+    }
+    translate( [ sx, sy, 0 ] ) {
+        cylinder( r=radius, h=sz, center = true );
     }
 }
 
-module holeShape(diameter, distx, disty) {
-    translate([distx, disty, 0]) {
-        cylinder(r = diameter / 2, h = PLATEZ * 2, center = true);
+// Quater plate bevels on external borders
+module plateBevel ( platex, platey, platez, radius ) {
+    sx = platex - radius;
+    sy = platey - radius;
+    sz = platez;
+
+    translate ( [0, platey, 0 ] ) {
+        rotate( [0,90,0] )
+        rotate( [0,0,180] )
+            bevelCutLinear( sx, sz );
+    }
+    translate ( [platex, 0, 0 ] ) {
+        rotate( [-90,0,0] )
+        rotate( [0,0,90] )
+            bevelCutLinear( sy, sz );
+    }
+    translate ( [platex, platey, 0 ] ) {
+        bevelCutArc( radius, sz );
     }
 }
 
-module holesArray( fourHoles ) {
-    union() {
-        for(holeParams = fourHoles)
-            holeShape(holeParams[0], holeParams[1], holeParams[2]);
+// Quater plate bevels on internal border along X
+module plateBevelInternalX ( platex, platez ) {
+    rotate( [0,90,0] )
+        bevelCutLinear( platex, platez );
+}
+
+// Quater plate bevels on internal border along X
+module plateBevelInternalY ( platey, platez ) {
+    rotate( [-90,0,0] )
+    rotate( [0,0,-90] )
+        bevelCutLinear( platey, platez );
+}
+
+
+module headPanPlateShape() {
+    translate( [HP_PLATE_X,0,0] )
+    mirrorX()
+        plateShape( HP_PLATE_SX, HP_PLATE_SY/2, HP_PLATE_SZ, getRadiusCorners() );
+}
+module headPanPlateBevel() {
+    // Bevel extruding
+    translate( [HP_PLATE_X,0,0] )
+    mirrorX() {
+        plateBevel( HP_PLATE_SX, HP_PLATE_SY/2, HP_PLATE_SZ, getRadiusCorners() );
+        plateBevelInternalY( HP_PLATE_SY/2, HP_PLATE_SZ );
     }
 }
-
-module quadPlateHoles( fourHoles ) {
-    difference() {
-        quadPlate();
-        holesArray( fourHoles );
-    }
+module headPanPlateExtrude() {
+    // Fixation extuding from PI fixation
+    mirrorX()
+        screwArray ( getRaspberryFourHoles() );
 }
 
-module halfPlate( fourHoles ) {
-    mirror([MIRRORX, 0, 0])
-        quadPlateHoles( fourHoles );
-    mirror([0, 0, 0])
-        quadPlateHoles( fourHoles );
-}
-
-// flatten([[0,1],[2,3]]) => [0,1,2,3]
-function flatten(list) = [ for (i = list, v = i) v ];
-
-// main module
-module plateImpl( fourHoles, singleHoles ) {
-    difference() {
-        union() {
-            mirror([0, MIRRORY, 0])
-                halfPlate( flatten(fourHoles) );
-            mirror([0, 0, 0])
-                halfPlate( flatten(fourHoles) );
-        }
-        for(holeParams = flatten(singleHoles) )
-            holeShape(holeParams[0], holeParams[1], holeParams[2]);
-    }
-}
 
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
 plate(
-    [
+    mirrorXYHoles = [
         getMotorsFourHoles(),
         getRaspberryFourHoles(),
         getMotorPcbFourHoles(),
@@ -193,4 +218,9 @@ plate(
     ],
     $fn = 50
 );
+
+%
+translate( [0,0,0] )
+rotate( [0,0,0] )
+    import( "../../stl/plate_middle.stl" );
 

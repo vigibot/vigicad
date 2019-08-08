@@ -29,13 +29,31 @@ module screwM2Tight ( lt=10, lp=5, lh=2 ) {
     screwMx( M2_DS, M2_DPT, M2_DH, lt, lp, lh );
 }
 
-
 // screws with loose passage
 module screwM2 ( lt=10, lp=5, lh=2 ) {
     screwMx( M2_DS, M2_DPL, M2_DH, lt, lp, lh );
 }
 module screwM25 ( lt=10, lp=5, lh=2 ) {
     screwMx( M25_DS, M25_DPL, M25_DH, lt, lp, lh );
+}
+
+module screwShape(diameter, distx, disty) {
+    translate([distx, disty, 0]) {
+        cylinder(r = diameter / 2, h=100, center = true);
+    }
+}
+
+// Render an array of vertical screws without mirroring
+//   Each screw is rendered once
+// Params:
+//   holes = [
+//     [ <diam>, <pos_x>, <pos_y> ],
+//     ...
+//     [ <diam>, <pos_x>, <pos_y> ]
+//   ]
+module screwArray( screws ) {
+    for(screwParams = screws)
+        screwShape(screwParams[0], screwParams[1], screwParams[2]);
 }
 
 // ----------------------------------------
