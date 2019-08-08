@@ -68,7 +68,7 @@ HOLE2_Y   = 0;
 CORNER_R  = 0;
 
 TOOL_BASE_SX = 12;
-TOOL_BASE_SY = 14; // Small side, large side is automatic
+TOOL_BASE_SY = 20; // Small side, large side is automatic
 
 module bracketShape() {
     difference() {
