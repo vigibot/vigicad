@@ -13,6 +13,8 @@
 
 ### Parts list
 
+#### Core assembly
+
 - Raspberry PI 2 / Raspberry PI 3 / Raspberry PI 3 A+ / Raspberry PI 3 B+
   - Raspberry PI 4 wait an issue with DMA-based software PWM
 - An aftermarket *wide-angle lens* camera module v1 clone is highly recommended
@@ -32,26 +34,56 @@
   - The Geekworm Power Pack V1.0 (blue PCB) need a larger hack to get usable
     - This modification solve the charger that does not start after a power cut
       - https://brousant.nl/jm3/elektronica/105-geekworm-ups-for-raspberry-pi-simple-modification-detailed
-- A micro USB magnetic cable for the charge station
-  - https://www.robot-maker.com/shop/alimentation/335-cable-usb-magnetique.html
-- Four "SG90" type micro servo
-  - A 270° servo is highly recommended for the head pan axis
-  - 180° servo is good for the clamp or the head tilt axis
-- Motorization
-  - Four Pololu 100:1 micro metal gearmotor HP 6V
-    - https://www.robot-maker.com/shop/moteurs-et-actionneurs/384-moteur-pololu-300-rpm.html
-    - https://www.pololu.com/product/1101
-  - Four Pololu micro metal gearmotor extended bracket
-    - https://www.robot-maker.com/shop/elements-mecaniques/385-support-moteur-pololu-long.html
-    - https://www.pololu.com/product/1089
-  - Four Pololu wheel 40×7mm
-    - https://www.robot-maker.com/shop/elements-mecaniques/346-roue-pololu-40mm.html
-    - https://www.pololu.com/product/1454
 - Hex standoffs
   - Four 12mm lenght standoffs between the Raspberry PI and UPS hat board
   - Four 25mm lenght standoffs between the UPS hat board and middle plate
   - Four 10mm lenght standoffs between the middle plate and bottom plate
 - 40mm fan for the top plate
   - https://www.amazon.fr/gp/product/B07D5QBFLK/ref=ppx_yo_dt_b_asin_title_o01_s00
+- Cables
+  - TODO
 - Screws
-  - Todo
+  - TODO
+
+#### Motorization assembly
+
+- Four Pololu 100:1 micro metal gearmotor HP 6V
+  - https://www.robot-maker.com/shop/moteurs-et-actionneurs/384-moteur-pololu-300-rpm.html
+  - https://www.pololu.com/product/1101
+- Four Pololu micro metal gearmotor extended bracket
+  - https://www.robot-maker.com/shop/elements-mecaniques/385-support-moteur-pololu-long.html
+  - https://www.pololu.com/product/1089
+- Four Pololu wheel 40×7mm
+  - https://www.robot-maker.com/shop/elements-mecaniques/346-roue-pololu-40mm.html
+  - https://www.pololu.com/product/1454
+- Feetech 2ch motor controller
+  - https://www.robot-maker.com/shop/drivers-d-actionneurs/280-driver-convertisseur-moteur-cc-servomoteur.html
+- Cables
+  - TODO
+- Screws
+  - TODO
+
+#### Head assembly
+
+- Two "SG90" type micro servo
+  - A 270° servo is highly recommended for the pan axis
+  - A 180° servo is good for the tilt axis
+- Cables
+  - TODO
+- Screws
+  - TODO
+
+#### Clamp assembly
+
+- Two 180° "SG90" type micro servo
+- Cables
+  - TODO
+- Screws
+  - TODO
+
+#### Charge station assembly
+
+- A micro USB magnetic cable
+  - https://www.robot-maker.com/shop/alimentation/335-cable-usb-magnetique.html
+- Screws
+  - TODO
