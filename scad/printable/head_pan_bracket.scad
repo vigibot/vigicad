@@ -50,7 +50,7 @@ module bracketHoles() {
 MFG = 0.01; // 2 Manifold Guard
 BEVEL = 0.5;
 
-PLATE_SX  = 12.5 ;
+PLATE_SX  = 12.6 ;
 PLATE_SY  = 44 ;
 PLATE_SZ  = 3 ;
 
@@ -128,4 +128,4 @@ headPanBracket($fn=50);
             servo(180,bodyRotation=0);
             servoScrewHoles( bodyRotation=0 );
         }
-    } 
+    }
