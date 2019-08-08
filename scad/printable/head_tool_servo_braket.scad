@@ -20,11 +20,13 @@ use <../lib/servo_sg90.scad>
 //                  API
 // ----------------------------------------
 
-// Head pan plate with given holes lists
-module headPanServoBracket() {
+THIS_TOOL_PLATE_SY = 44 ;
+
+// Larger tool plate
+module headToolServoBracket() {
     difference() {
-        headPanPlate();
-        headPanServoBracketExtrude();
+        toolPlate( servoBoxSizeZ(), THIS_TOOL_PLATE_SY );
+        headToolServoBracketExtrude();
     }
 }
 
@@ -32,35 +34,26 @@ module headPanServoBracket() {
 //            Implementation
 // ----------------------------------------
 
-module headPanServoBracketExtrude() {
+module headToolServoBracketExtrude() {
     // Servo extruding
     translate( [
-        getHeadPanPlateX()+getHeadPanPlateSX()-servoBoxSizeZ()/2,
-        servoAxisPosY(),
+        getToolBaseX()+servoBoxSizeZ()/2,
+        -servoAxisPosY(),
         -servoStandPosX()-servoStandSizeX()/2-getHeadPanPlateSZ()/2] )
+        rotate( [0,0,180] )
         rotate( [0,90,0] ) {
-            servo(60);
+            servo(-60);
             servoScrewHoles();
         }
 }
 
-module headPanServoBracketShow() {
-%    headPanPlateExtrude();
-%    headPanServoBracketExtrude();
+module headToolServoBracketShow() {
+%    toolBaseExtrude();
+%    headToolServoBracketExtrude();
 }
 
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-headPanServoBracket($fn=100);
-headPanServoBracketShow($fn=100);
-
-%
-translate( [getHeadPanPlateX(),0,0] )
-rotate( [0,0,-90] )
-translate( [0,5.5,-1.5] )
-rotate( [0,0,0] )
-    import( "../../stl/head_pan_servo_braket.stl" );
-
-
-
+headToolServoBracket($fn=100);
+headToolServoBracketShow($fn=100);

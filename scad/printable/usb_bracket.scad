@@ -120,7 +120,5 @@ module usbBracketBevel() {
 usbBracket($fn=50);
 
 %
-translate( [0,0,1.5] )
-rotate( [0,90,0] )
-    import( "../../stl/usb_bracket.stl" );
+import( "../../stl/usb_bracket.stl" );
 
