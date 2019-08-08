@@ -6,7 +6,7 @@
  *   * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * 
- * Description: OpenSCAD design for Vigibot head pan bracket
+ * Description: OpenSCAD design for Vigibot usb bracket
  * Design:      Quillès Jonathan 
  * Author:      Gilles Bouissac / Quillès Jonathan
  */
@@ -25,7 +25,7 @@ module headPanBracket() {
            bracketBevel();
         }
         rotate( [180,90,0] ) {
-            translate( [14.5,5.5,-6.5] ) {
+            translate( [20.3,5.5,-6.5] ) {
                 servo(180,bodyRotation=0);
                 servoScrewHoles( bodyRotation=0 );
             }
@@ -51,7 +51,7 @@ MFG = 0.01; // 2 Manifold Guard
 BEVEL = 0.5;
 
 PLATE_SX  = 12.5 ;
-PLATE_SY  = 45 ;
+PLATE_SY  = 44 ;
 PLATE_SZ  = 3 ;
 
 HOLLOW_SX = 11;
@@ -124,9 +124,8 @@ module bracketBevel() {
 // ----------------------------------------
 headPanBracket($fn=50);
 % rotate( [180,90,0] ) {
-    translate( [14.5,5.5,-6.5] ) {
-        servo(180,bodyRotation=0);
+    translate( [20.3,5.5,-6.5] ) {
+            servo(180,bodyRotation=0);
+            servoScrewHoles( bodyRotation=0 );
         }
-    }
-      
-
+    } 
