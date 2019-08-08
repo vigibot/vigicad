@@ -83,25 +83,25 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
             translate( [SERVO_HEAD_HEIGHT+HORN_T/2+HORN_AXIS_T,servoAxisPosY(),0] ) {
                 // Servo Box
                 translate ([SERVO_BOX_X/2, 0, 0])
-                    cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
+                    cube([SERVO_BOX_X+2*MFG, SERVO_BOX_X+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
 
                 // Servo Stand
                 translate ([SERVO_BOX_X-SERVO_STAND_OFFSET, 0, 0])
-                    cube([SERVO_STAND_THICKNESS, SERVO_STAND_LENGTH, SERVO_BOX_Z], center = true);
+                    cube([SERVO_STAND_THICKNESS+2*MFG, SERVO_STAND_LENGTH+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
 
                 // Servo Head 
                 translate ([
                     -SERVO_HEAD_HEIGHT/2,
                     (SERVO_HEAD_WIDTH-SERVO_BOX_X)/2,
                     0])
-                    cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
+                    cube([SERVO_HEAD_HEIGHT+2*MFG, SERVO_HEAD_WIDTH+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
 
                 // Space for wires
                 translate ([
                     SERVO_BOX_X-WIRE_PASS_X/2,
                     -(SERVO_BOX_X+WIRE_PASS_Y)/2,
                     0])
-                    cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                    cube([WIRE_PASS_X+2*MFG, WIRE_PASS_Y+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
             }
 
             // Required Horn
