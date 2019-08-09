@@ -96,14 +96,6 @@ module headPanPlate ( mirrorXHoles=[], noMirrorHoles=[] ) {
         mirrorX()
             screwArray( flatten(mirrorXHoles) );
     }
-    headPanPlateTray()
-        children();
-}
-// Children of this will follow headPanPlate
-module headPanPlateTray() {
-    translate( [getHeadPanPlateX(),0,0] ) {
-        children();
-    }
 }
 
 module toolPlate ( tool_sx=0, plate_sy=TOOL_PLATE_SY, mirrorXHoles=[], noMirrorHoles=[] ) {
@@ -300,10 +292,12 @@ translate( [0,0,getToolBaseSZ()] )
 toolPlate (40, $fn = 50);
 
 translate( [0,0,getToolBaseSZ()] )
-rotate( [0,0,180] )
-headPanPlate ($fn = 50)
-    mirrorX()
-    plateShape(20,20,2,2)
+rotate( [0,0,180] ){
+    headPanPlate ($fn = 50);
+    translate( [getHeadPanPlateX(),0,0] )
+        mirrorX()
+        plateShape(20,20,2,2);
+}
 
 %
 translate( [0,0,0] )

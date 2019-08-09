@@ -40,7 +40,7 @@ module headPanServoBracket() {
 
 module headPanServoBracketShape() {
     headPanPlate();
-    headPanPlateTray()
+    translate( [getHeadPanPlateX(),0,0] )
         mirrorX(SYMETRIC)
             translate( [-RADIUSBEVEL, -servoAxisPosY(), 0] )
                 mirrorX()
@@ -53,16 +53,15 @@ module headPanServoBracketShape() {
 
 module headPanServoBracketExtrude() {
     // Servo extruding conveyed by headPanPlate
-    headPanPlateTray()
-        translate( [
-            servoBoxSizeZ()/2+OFFSET,
-            -servoAxisPosY(),
-            -servoStandTopPosX()-getHeadPanBaseSZ()/2
-        ])
-            rotate( [0,90,180] ) {
-                servo(180);
-                servoScrewHoles();
-            }
+    translate( [
+        getHeadPanPlateX()+servoBoxSizeZ()/2+OFFSET,
+        -servoAxisPosY(),
+        -servoStandTopPosX()-getHeadPanBaseSZ()/2
+    ])
+        rotate( [0,90,180] ) {
+            servo(180);
+            servoScrewHoles();
+        }
 }
 
 module headPanServoBracketShow() {
