@@ -15,6 +15,8 @@
 MFG = 0.01; // 2 Manifold Guard
 RADIUSBEVEL = 0.5; // Default radius bevel
 
+function getRadiusBevel() = RADIUSBEVEL;
+
 BEVELTYPENONE = 0;
 BEVELTYPESPHERE = 1;
 BEVELTYPEDIAGONAL = 2;
