@@ -24,7 +24,7 @@ use <../lib/bevel.scad>
 // Head pan plate with given holes lists
 
 SYMETRIC = 0; // bool
-OFFSET = 1;   //distance in mm
+OFFSET = 0;   //distance in mm
 RADIUSBEVEL = getRadiusBevel();
 
 module headPanServoBracket() {
