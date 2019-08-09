@@ -8,23 +8,52 @@
  * 
  * Description: OpenSCAD design for Vigibot usb bracket
  * Design:      Quillès Jonathan / Pascal Piazzalungua
- * Author:      Gilles Bouissac
+ * Author:      Gilles Bouissac / Quillès Jonathan
  */
 
 use <../lib/extensions.scad>
 use <../lib/hardware_shop.scad>
 use <../lib/plates.scad>
 use <../lib/servo_sg90.scad>
+use <../lib/bevel.scad>
 
 // ----------------------------------------
 //                  API
 // ----------------------------------------
 
 // Head pan plate with given holes lists
+
+SYMETRIC = 0; // bool
+OFFSET = 1;   //distance in mm
+RADIUSBEVEL = getRadiusBevel();
+
 module headPanServoBracket() {
-    difference() {
-        headPanPlate();
-        headPanServoBracketExtrude();
+    if(SYMETRIC) {
+        difference() {
+            union() {
+                headPanPlate(1.5); // To do replace with headPanPlate() when lib will be corrected
+                translate( [
+                    getHeadPanPlateX()+ OFFSET/2 -RADIUSBEVEL + getHeadPanPlateSX() - servoBoxSizeZ()/2,
+                    0,
+                    0] )
+                    cube([servoBoxSizeZ() + RADIUSBEVEL + OFFSET , servoSizeY() + 2*servoAxisPosY(), getMainPlateSZ()], center = true);
+            }
+            headPanServoBracketExtrude();
+        }
+        
+    }
+    else {
+        difference() {
+            union() {
+                headPanPlate(1.5); // To  do replace with headPanPlate() when lib will be corrected
+                translate( [
+                    getHeadPanPlateX()+ OFFSET/2 -RADIUSBEVEL + getHeadPanPlateSX() - servoBoxSizeZ()/2,
+                    -servoAxisPosY(),
+                    0] )
+                    cube([servoBoxSizeZ() + RADIUSBEVEL + OFFSET , servoSizeY(), getMainPlateSZ()], center = true);
+            }
+            headPanServoBracketExtrude();
+        }
     }
 }
 
@@ -35,11 +64,11 @@ module headPanServoBracket() {
 module headPanServoBracketExtrude() {
     // Servo extruding
     translate( [
-        getHeadPanPlateX()+getHeadPanPlateSX()-servoBoxSizeZ()/2,
-        servoAxisPosY(),
+        getHeadPanPlateX()+getHeadPanPlateSX()-servoBoxSizeZ()/2 + OFFSET,
+        -servoAxisPosY(),
         -servoStandPosX()-servoStandSizeX()/2-getHeadPanPlateSZ()/2] )
-        rotate( [0,90,0] ) {
-            servo(60);
+        rotate( [0,90,180] ) {
+            servo(180);
             servoScrewHoles();
         }
 }
@@ -54,13 +83,3 @@ module headPanServoBracketShow() {
 // ----------------------------------------
 headPanServoBracket($fn=100);
 headPanServoBracketShow($fn=100);
-
-%
-translate( [getHeadPanPlateX(),0,0] )
-rotate( [0,0,-90] )
-translate( [0,5.5,-1.5] )
-rotate( [0,0,0] )
-    import( "../../stl/head_pan_servo_braket.stl" );
-
-
-
