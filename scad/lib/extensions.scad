@@ -14,30 +14,29 @@
 
 // Render children modules with mirroring on X
 //   Each child is rendered twice
-module mirrorX() {
+module mirrorX( mirrorx=true ) {
     mirror([0, 0, 0])
         children();
-    mirror([0, 1, 0])
-        children();
+    if ( mirrorx )
+        mirror([0, 1, 0])
+            children();
 }
 
 // Render children modules with mirroring on Y
 //   Each child is rendered twice
-module mirrorY() {
+module mirrorY( mirrory=true ) {
     mirror([0, 0, 0])
         children();
-    mirror([1, 0, 0])
-        children();
+    if ( mirrory )
+        mirror([1, 0, 0])
+            children();
 }
 
 // Render children modules with mirroring on X and Y
 //   Each child is rendered twice
-module mirrorXY( screws ) {
-    mirror([0, 0, 0])
-        mirrorX()
-            children();
-    mirror([1, 0, 0])
-        mirrorX()
+module mirrorXY( mirrorx=true, mirrory=true ) {
+    mirrorY(mirrory)
+        mirrorX(mirrorx)
             children();
 }
 
