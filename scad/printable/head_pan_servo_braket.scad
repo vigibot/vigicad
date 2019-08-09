@@ -22,38 +22,15 @@ use <../lib/bevel.scad>
 // ----------------------------------------
 
 // Head pan plate with given holes lists
-
-SYMETRIC = 0; // bool
-OFFSET = 0;   //distance in mm
-RADIUSBEVEL = getRadiusBevel();
+SYMETRIC     = false;
+OFFSET       = 0;   //distance of servo in mm
+RADIUSBEVEL  = getRadiusBevel();
+RADIUSCORNER = 0;
 
 module headPanServoBracket() {
-    if(SYMETRIC) {
-        difference() {
-            union() {
-                headPanPlate(1.5); // To do replace with headPanPlate() when lib will be corrected
-                translate( [
-                    getHeadPanPlateX()+ OFFSET/2 -RADIUSBEVEL + getHeadPanPlateSX() - servoBoxSizeZ()/2,
-                    0,
-                    0] )
-                    cube([servoBoxSizeZ() + RADIUSBEVEL + OFFSET , servoSizeY() + 2*servoAxisPosY(), getMainPlateSZ()], center = true);
-            }
-            headPanServoBracketExtrude();
-        }
-        
-    }
-    else {
-        difference() {
-            union() {
-                headPanPlate(1.5); // To  do replace with headPanPlate() when lib will be corrected
-                translate( [
-                    getHeadPanPlateX()+ OFFSET/2 -RADIUSBEVEL + getHeadPanPlateSX() - servoBoxSizeZ()/2,
-                    -servoAxisPosY(),
-                    0] )
-                    cube([servoBoxSizeZ() + RADIUSBEVEL + OFFSET , servoSizeY(), getMainPlateSZ()], center = true);
-            }
-            headPanServoBracketExtrude();
-        }
+    difference() {
+        headPanServoBracketShape();
+        headPanServoBracketExtrude();
     }
 }
 
@@ -61,16 +38,31 @@ module headPanServoBracket() {
 //            Implementation
 // ----------------------------------------
 
+module headPanServoBracketShape() {
+    headPanPlate();
+    headPanPlateTray()
+        mirrorX(SYMETRIC)
+            translate( [-RADIUSBEVEL, -servoAxisPosY(), 0] )
+                mirrorX()
+                    plateShape(
+                        servoBoxSizeZ()+RADIUSBEVEL/2+OFFSET,
+                        servoSizeY()/2,
+                        getMainPlateSZ(),
+                        RADIUSCORNER);
+}
+
 module headPanServoBracketExtrude() {
-    // Servo extruding
-    translate( [
-        getHeadPanPlateX()+getHeadPanPlateSX()-servoBoxSizeZ()/2 + OFFSET,
-        -servoAxisPosY(),
-        -servoStandPosX()-servoStandSizeX()/2-getHeadPanPlateSZ()/2] )
-        rotate( [0,90,180] ) {
-            servo(180);
-            servoScrewHoles();
-        }
+    // Servo extruding conveyed by headPanPlate
+    headPanPlateTray()
+        translate( [
+            servoBoxSizeZ()/2+OFFSET,
+            -servoAxisPosY(),
+            -servoStandTopPosX()-getHeadPanBaseSZ()/2
+        ])
+            rotate( [0,90,180] ) {
+                servo(180);
+                servoScrewHoles();
+            }
 }
 
 module headPanServoBracketShow() {
@@ -83,3 +75,7 @@ module headPanServoBracketShow() {
 // ----------------------------------------
 headPanServoBracket($fn=100);
 headPanServoBracketShow($fn=100);
+
+%
+import( "../../stl/head_pan_servo_braket.stl" );
+

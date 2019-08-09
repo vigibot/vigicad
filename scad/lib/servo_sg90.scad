@@ -45,20 +45,21 @@ SERVO_INTER_SCREW = 28;
 SERVO_AXIS_Y = 5.4;
 
 // Dimension accessors
-function servoBoxSizeX()   = SERVO_BOX_X;
-function servoBoxSizeY()   = SERVO_BOX_X;
-function servoBoxSizeZ()   = SERVO_BOX_Z;
-function servoSizeX()      = SERVO_BOX_X+SERVO_HEAD_HEIGHT;
-function servoSizeY()      = SERVO_STAND_LENGTH;
-function servoSizeZ()      = SERVO_BOX_Z;
-function servoStandSizeX() = SERVO_STAND_THICKNESS;
-function servoStandSizeY() = SERVO_STAND_LENGTH;
-function servoStandSizeZ() = SERVO_BOX_Z;
-function servoStandPosX()  = SERVO_STAND_OFFSET;
-function servoAxisPosX()   = 0;
-function servoAxisPosY()   = SERVO_AXIS_Y;
-function servoScrewPosX()  = -SERVO_STAND_OFFSET+SERVO_STAND_THICKNESS/2;
-function servoScrewPosY()  = SERVO_INTER_SCREW/2;
+function servoBoxSizeX()     = SERVO_BOX_X;
+function servoBoxSizeY()     = SERVO_BOX_X;
+function servoBoxSizeZ()     = SERVO_BOX_Z;
+function servoSizeX()        = SERVO_BOX_X+SERVO_HEAD_HEIGHT;
+function servoSizeY()        = SERVO_STAND_LENGTH;
+function servoSizeZ()        = SERVO_BOX_Z;
+function servoStandSizeX()   = SERVO_STAND_THICKNESS;
+function servoStandSizeY()   = SERVO_STAND_LENGTH;
+function servoStandSizeZ()   = SERVO_BOX_Z;
+function servoStandPosX()    = SERVO_STAND_OFFSET;
+function servoStandTopPosX() = servoStandPosX()+servoStandSizeX()/2;
+function servoAxisPosX()     = 0;
+function servoAxisPosY()     = SERVO_AXIS_Y;
+function servoScrewPosX()    = -SERVO_STAND_OFFSET+SERVO_STAND_THICKNESS/2;
+function servoScrewPosY()    = SERVO_INTER_SCREW/2;
 
 module servoHorn( r=0 ) {
     rotate([r,0,0])

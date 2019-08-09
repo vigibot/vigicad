@@ -24,12 +24,11 @@ MAINPLATE_SX  = 95;
 MAINPLATE_SY  = 60;
 MAINPLATE_SZ  = 3;
 
-HP_PLATE_SX  = 14 ;
-HP_BASE_SX  = 12 ;
-HP_PLATE_SY  = 60 ;
-HP_PLATE_SZ  = 3 ;
-HP_PLATE_DX  = 0.5; // offset of this plate from main plate
-HP_PLATE_X   = getMainPlateSX()/2 - HP_PLATE_SX + HP_PLATE_DX;
+HP_BASE_SX   = 13.5 ;
+HP_BASE_SY   = MAINPLATE_SY ;
+HP_BASE_SZ   = MAINPLATE_SZ ;
+HP_BASE_X    = getMainPlateSX()/2 - HP_BASE_SX ;
+HP_PLATE_X   = getMainPlateSX()/2;
 
 TOOL_PLATE_SY = 38 ;
 TOOL_BASE_SX  = 12 ;
@@ -49,9 +48,9 @@ function getMainPlateSY()   = MAINPLATE_SY;
 function getMainPlateSZ()   = MAINPLATE_SZ;
 
 function getHeadPanBaseSX()    = HP_BASE_SX;
-function getHeadPanPlateSX()   = HP_BASE_SX+HP_PLATE_SX;
-function getHeadPanPlateSY()   = HP_PLATE_SY;
-function getHeadPanPlateSZ()   = HP_PLATE_SZ;
+function getHeadPanBaseSY()    = HP_BASE_SY;
+function getHeadPanBaseSZ()    = HP_BASE_SZ;
+function getHeadPanBaseX()     = HP_BASE_X;
 function getHeadPanPlateX()    = HP_PLATE_X;
 
 function getToolBaseSX()   = TOOL_BASE_SX;
@@ -84,10 +83,10 @@ module plate ( mirrorXYHoles=[], noMirrorHoles=[] ) {
     }
 }
 
-module headPanPlate ( tool_sx=HP_PLATE_SX, mirrorXHoles=[], noMirrorHoles=[] ) {
+module headPanPlate ( mirrorXHoles=[], noMirrorHoles=[] ) {
     difference() {
-        headPanPlateShape( tool_sx );
-        headPanPlateBevel( tool_sx );
+        headPanPlateShape();
+        headPanPlateBevel();
         headPanPlateExtrude();
 
         // Holes with no mirroring
@@ -96,6 +95,14 @@ module headPanPlate ( tool_sx=HP_PLATE_SX, mirrorXHoles=[], noMirrorHoles=[] ) {
         // Holes with X mirroring
         mirrorX()
             screwArray( flatten(mirrorXHoles) );
+    }
+    headPanPlateTray()
+        children();
+}
+// Children of this will follow headPanPlate
+module headPanPlateTray() {
+    translate( [getHeadPanPlateX(),0,0] ) {
+        children();
     }
 }
 
@@ -161,7 +168,7 @@ function getFanSimpleHoles() = [
 // ----------------------------------------
 
 // Quater plate shape
-module plateShape( platex, platey, platez, radius ) {
+module plateShape( platex, platey, platez, radius=getRadiusCorners() ) {
     sx = platex - radius;
     sy = platey - radius;
     sz = platez;
@@ -180,7 +187,7 @@ module plateShape( platex, platey, platez, radius ) {
 }
 
 // Quater plate bevels on external borders
-module plateBevel ( platex, platey, platez, radius ) {
+module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
     sx = platex - radius;
     sy = platey - radius;
     sz = platez;
@@ -214,17 +221,17 @@ module plateBevelInternalY ( platey, platez ) {
 }
 
 
-module headPanPlateShape( tool_sx ) {
-    translate( [HP_PLATE_X,0,0] )
+module headPanPlateShape( radius=getRadiusCorners() ) {
+    translate( [getHeadPanBaseX(),0,0] )
     mirrorX()
-        plateShape( HP_BASE_SX+tool_sx, HP_PLATE_SY/2, HP_PLATE_SZ, getRadiusCorners() );
+        plateShape( getHeadPanBaseSX(), getHeadPanBaseSY()/2, getHeadPanBaseSZ(), radius );
 }
-module headPanPlateBevel( tool_sx ) {
+module headPanPlateBevel( radius=getRadiusCorners() ) {
     // Bevel extruding
-    translate( [HP_PLATE_X,0,0] )
+    translate( [getHeadPanBaseX(),0,0] )
     mirrorX() {
-        plateBevel( HP_BASE_SX+tool_sx, HP_PLATE_SY/2, HP_PLATE_SZ, getRadiusCorners() );
-        plateBevelInternalY( HP_PLATE_SY/2, HP_PLATE_SZ );
+        plateBevel( getHeadPanBaseSX(), getHeadPanBaseSY()/2, getHeadPanBaseSZ(), radius );
+        plateBevelInternalY( getHeadPanBaseSY()/2, getHeadPanBaseSZ() );
     }
 }
 module headPanPlateExtrude() {
@@ -258,11 +265,11 @@ module toolPlateBevel(tool_sx, plate_sy, radius=getRadiusCorners()) {
         mirrorX() {
             plateBevel( tool_sx, plate_sy/2, TOOL_BASE_SZ, radius );
             translate( [-TOOL_BASE_SX,0,0] ) {
-                plateBevelInternalY( plate_sy/2-TOOL_BASE_SX, HP_PLATE_SZ );
+                plateBevelInternalY( plate_sy/2-TOOL_BASE_SX, TOOL_BASE_SZ );
                 translate( [0,-plate_sy/2+TOOL_BASE_SX,0] )
                 rotate( [0,0,-45] )
                 rotate( [0,90,0] )
-                    bevelCutLinear( TOOL_BASE_SX/cos(45), HP_PLATE_SZ );
+                    bevelCutLinear( TOOL_BASE_SX/cos(45), TOOL_BASE_SZ );
             }
         }
     }
@@ -294,7 +301,9 @@ toolPlate (40, $fn = 50);
 
 translate( [0,0,getToolBaseSZ()] )
 rotate( [0,0,180] )
-headPanPlate (50,$fn = 50);
+headPanPlate ($fn = 50)
+    mirrorX()
+    plateShape(20,20,2,2)
 
 %
 translate( [0,0,0] )
