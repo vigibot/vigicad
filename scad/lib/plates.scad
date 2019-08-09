@@ -152,7 +152,7 @@ function getFanFourHoles() = [
 
 // Get Vigibot FAN main holes
 function getFanSimpleHoles() = [
-    [5, 18, -8],
+    [5, 18, 8],
     [28.5, 0, 0]
 ];
 
