@@ -11,16 +11,13 @@
  * Author:      Gilles Bouissac
  */
 
+use <extensions.scad>
 
 MFG = 0.01; // 2 Manifold Guard
 RADIUSBEVEL = 0.5; // Default radius bevel
+CUTTER_W    = 1;
 
 function getRadiusBevel() = RADIUSBEVEL;
-
-BEVELTYPENONE = 0;
-BEVELTYPESPHERE = 1;
-BEVELTYPEDIAGONAL = 2;
-BEVELTYPE = BEVELTYPEDIAGONAL;
 
 // ----------------------------------------
 //                  API
@@ -28,10 +25,11 @@ BEVELTYPE = BEVELTYPEDIAGONAL;
 
 // Double diagonal bevels distant from width extruded in line
 module bevelCutLinear( length, width, b=RADIUSBEVEL ) {
-    translate ( [-width/2, 0, -MFG] )
-    linear_extrude( height=length+2*MFG )
-        bevelDiagonalSection ( b );
-    mirror ( [1,0,0] )
+    // Cutter
+    translate ( [-width/2-MFG, -CUTTER_W, 0] )
+        cube( [width+2*MFG,CUTTER_W,length+2*MFG] );
+    // Bevel
+    mirrorY()
     translate ( [-width/2, 0, -MFG] )
     linear_extrude( height=length+2*MFG )
         bevelDiagonalSection ( b );
@@ -39,19 +37,23 @@ module bevelCutLinear( length, width, b=RADIUSBEVEL ) {
 
 // Double diagonal bevels distant from width extruded in quater of circle
 module bevelCutArc( radius, width, b=RADIUSBEVEL ) {
+    // Cutter
+    cutterCubeW = radius+CUTTER_W;
     translate ( [-radius, -radius, 0] )
-    rotate_extrude( angle=90 )
-        translate ( [radius, width/2, 0] )
-        rotate( [0,0,180] )
-        bevelDiagonalSection ( b );
-    mirror ( [0,0,1] )
+        difference() {
+            translate ( [cutterCubeW/2, cutterCubeW/2, 0] )
+                cube( [cutterCubeW,cutterCubeW,width+2*MFG], center=true );
+            cylinder( r=radius, h=width+4*MFG, center=true );
+        }
+    // Bevel
+    mirrorZ()
     translate ( [-radius, -radius, 0] )
     rotate_extrude( angle=90 )
         translate ( [radius, width/2, 0] )
         rotate( [0,0,180] )
         bevelDiagonalSection ( b );
 }
-
+//
 // ----------------------------------------
 //            Implementation
 // ----------------------------------------
@@ -64,7 +66,6 @@ module bevelDiagonalSection ( radius ) {
         [-MFG,       radius],
     ]);
 }
-
 
 // ----------------------------------------
 //                 Showcase
