@@ -1,3 +1,7 @@
+
+use <../lib/extensions.scad>
+use <../lib/bevel.scad>
+
 PRECISION = 100;
 
 $fn = PRECISION;
@@ -35,6 +39,13 @@ module plate() {
  }
 }
 
+module bevels() {
+    translate([-ARMWIDTH , -(ARMWIDTH + STANDWIDTH/2 + SPACE/2), 0]) {  
+        rotate([0,90,0])
+            bevelCutLinear(LENGTH+ARMWIDTH,HEIGHT);
+    }
+}
+
 module holes() {
  translate([LENGTH - AXISOFFSET , ARMWIDTH/2 + STANDWIDTH/2 + SPACE/2, 0]) {
   rotate([90,0,0]) {
@@ -56,5 +67,7 @@ module holes() {
 
 difference() {
  plate();
+ mirrorX()
+    bevels();
  holes();
 }
