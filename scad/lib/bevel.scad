@@ -36,27 +36,34 @@ module bevelCutLinear( length, width, b=RADIUSBEVEL ) {
 }
 
 // Double diagonal bevels distant from width extruded in quater of circle
-module bevelCutArc( radius, width, b=RADIUSBEVEL ) {
-    // Cutter
-    cutterCubeW = radius+CUTTER_W;
-    translate ( [-radius, -radius, 0] )
-        difference() {
-            translate ( [cutterCubeW/2, cutterCubeW/2, 0] )
-                cube( [cutterCubeW,cutterCubeW,width+2*MFG], center=true );
-            cylinder( r=radius, h=width+4*MFG, center=true );
-        }
-    // Bevel
+module bevelCutArc( radius, width, angle=90, b=RADIUSBEVEL ) {
+    translate ( [0, radius-radius*tan(angle/2), 0] )
     mirrorZ()
-    translate ( [-radius, -radius, 0] )
-    rotate_extrude( angle=90 )
-        translate ( [radius, width/2, 0] )
-        rotate( [0,0,180] )
-        bevelDiagonalSection ( b );
+    translate ( [-radius, -radius, 0] ) {
+        // Cutter
+        rotate_extrude( angle=angle )
+            bevelCutterSection ( radius, radius/cos(angle/2), width/2 );
+        // Bevel
+        rotate_extrude( angle=angle )
+            translate ( [radius, width/2, 0] )
+            rotate( [0,0,180] )
+            bevelDiagonalSection ( b );
+    }
 }
 //
 // ----------------------------------------
 //            Implementation
 // ----------------------------------------
+
+// This is a simple rectangle
+module bevelCutterSection ( x1, x2, sizey ) {
+    polygon([
+        [x1,         0],
+        [x2+MFG,     0],
+        [x2+MFG, sizey+MFG],
+        [x1,     sizey+MFG]
+    ]);
+}
 
 // Section of a diagonal (linear 45 deg) bevel
 module bevelDiagonalSection ( radius ) {
@@ -70,10 +77,42 @@ module bevelDiagonalSection ( radius ) {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-translate ( [5, 0, 0] )
-rotate( [90,0,0] )
-rotate( [0,0,90] )
-bevelCutLinear( 20, 2 );
+$fn=100;
 
-translate ( [5, 5, 0] )
-bevelCutArc( 5, 2, $fn=100 );
+difference() {
+    translate( [0,0,-1] )
+    linear_extrude( height=2 )
+    polygon([
+        [5,5],
+        [5,-10],
+        [0,-15],
+        [0,5]
+    ]);
+#
+    union() {
+        translate ( [5, 0, 0] )
+            rotate( [90,0,0] )
+            rotate( [0,0,90] )
+            bevelCutLinear( 10, 2 );
+
+        translate ( [0, 5, 0] )
+            rotate( [90,0,0] )
+            rotate( [0,0,-90] )
+            bevelCutLinear( 20, 2 );
+
+        translate ( [0, -15, 0] )
+            rotate( [0,0,45] )
+            rotate( [0,90,0] )
+            bevelCutLinear( 5/cos(45), 2 );
+
+        translate ( [5, -10, 0] )
+            bevelCutArc( 5, 2, -45 );
+
+        translate ( [0, -15, 0] )
+            rotate( [0,0,180] )
+            bevelCutArc( 1.5, 2, 135 );
+
+        translate ( [5, 5, 0] )
+            bevelCutArc( 5, 2 );
+    }
+}

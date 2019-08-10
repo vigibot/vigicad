@@ -161,20 +161,8 @@ function getFanSimpleHoles() = [
 
 // Quater plate shape
 module plateShape( platex, platey, platez, radius=getRadiusCorners() ) {
-    sx = platex - radius;
-    sy = platey - radius;
-    sz = platez;
-    translate( [ sx/2, sy/2, 0 ] ) {
-        cube([sx, sy, sz], center = true );
-    }
-    translate( [ sx+radius/2, sy/2, 0 ] ) {
-        cube([radius, sy, sz], center = true );
-    }
-    translate( [ sx/2, sy+radius/2, 0 ] ) {
-        cube([sx, radius, sz], center = true );
-    }
-    translate( [ sx, sy, 0 ] ) {
-        cylinder( r=radius, h=sz, center = true );
+    translate( [ platex/2, platey/2, 0 ] ) {
+        cube([platex, platey, platez], center = true );
     }
 }
 
@@ -277,6 +265,7 @@ module toolBaseExtrude() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
+$fn = 50;
 plate(
     mirrorXYHoles = [
         getMotorsFourHoles(),
@@ -284,22 +273,21 @@ plate(
         getMotorPcbFourHoles(),
         getOblongFourHoles(),
         getToolFourHoles(),
-    ],
-    $fn = 50
+    ]
 );
 
 translate( [0,0,getToolBaseSZ()] )
-toolPlate (40, $fn = 50);
+toolPlate (40);
 
 translate( [0,0,getToolBaseSZ()] )
 rotate( [0,0,180] ){
-    headPanPlate ($fn = 50);
+    headPanPlate();
     translate( [getHeadPanPlateX(),0,0] )
         mirrorX()
         plateShape(20,20,2,2);
 }
 
-
+*
 %
 translate( [0,0,0] )
 rotate( [0,0,0] )
