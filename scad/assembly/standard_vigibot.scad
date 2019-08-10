@@ -17,7 +17,8 @@ use <../printable/head_u_bracket.scad>
 use <../printable/head_servo_camera_bracket.scad>
 use <../printable/clamp_u_bracket.scad>
 use <../printable/clamp_servo_bracket.scad>
-use <../printable/clamp_finger_a_b.scad>
+use <../printable/clamp_finger_a.scad>
+use <../printable/clamp_finger_b.scad>
 use <../printable/usb_bracket.scad>
 use <../lib/u_bracket.scad>
 use <../lib/servo_sg90.scad>
@@ -80,5 +81,7 @@ translate( [83.75,0,-18.75] ) {
 
 color("white")
 translate( [83.75,0,PLATE_MID_Z-3] )
-rotate( [0,0,-90] )
-    clamp();
+rotate( [0,0,-90] ) {
+    clampFingerA();
+    clampFingerB();
+}

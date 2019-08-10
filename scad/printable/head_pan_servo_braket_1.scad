@@ -39,7 +39,7 @@ module headToolServoBracketExtrude() {
     translate( [
         getToolBaseX()+servoBoxSizeZ()/2,
         -servoAxisPosY(),
-        -servoStandPosX()-servoStandSizeX()/2-getHeadPanPlateSZ()/2] )
+        -servoStandPosX()-servoStandSizeX()/2-getHeadPanBaseSZ()/2] )
         rotate( [0,0,180] )
         rotate( [0,90,0] ) {
             servo(-60);

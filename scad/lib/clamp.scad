@@ -11,13 +11,42 @@
  * Author:      Gilles Bouissac
  */
 
-include <../../../PressureAngleGear/StraightGearLib.scad>
+use <../../../PressureAngleGear/StraightGearLib.scad>
 
-PRECISION=200;
 
-// ============
-//  PARAMETERS
-// ============
+// ----------------------------------------
+//                  API
+// ----------------------------------------
+
+module clampFingerAImpl(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
+    rotate( [0,0,-ARM_I] )
+    difference() {
+        union() {
+            gearA();
+            wedgeA();
+            mirror( [1,0,0] )
+                arm( arm_l, arm_r, with_stand=true );
+        }
+        cylinder(r=PINCE_A_HOLE/2,h=30,center=true);
+        servoHornHole();
+    }
+}
+
+module clampFingerBImpl(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
+    rotate( [0,0,ARM_I] )
+    difference() {
+        union() {
+            gearB();
+            wedgeB();
+            arm( arm_l, arm_r, with_stand=false );
+        }
+        cylinder(r=PINCE_B_HOLE/2,h=30,center=true);
+    }
+}
+
+// ----------------------------------------
+//            Implementation
+// ----------------------------------------
 
 // Pitch diameter (PD):
 //   Pitch diameters of 2 connected gears MUST be tangent
@@ -72,14 +101,17 @@ WB_H = 6.5; // Height
 WA_B = 1;   // Bevel
 WA_H = 7.5; // Height
 
-$fn=PRECISION;
-
 GEAR_PRM = gearPrm2D (
     NBTOOTH,
     MODULE,
     ALPHA,
     0.2
 );
+
+function getClampPitchDiameter()    = PITCHDIAMETER;
+function getClampArmBaseLength()    = ARM_L;
+function getClampArmBaseRadius()    = ARM_R;
+
 module gearShape ( thickness=THICKNESS ) {
     rotate([0,0,0])
         linear_extrude(height=thickness, convexity = 10)
@@ -118,7 +150,7 @@ module wedgeA() {
     // h section 2: 1.3  / 4.55
     // h section 3: 1.65 / 6.2
     // h section 4: 1.3  / 7.5
-    rotate_extrude($fn=PRECISION)
+    rotate_extrude()
     polygon( points=[
         [0,THICKNESS],
         // Elargissement de la base pour masquer
@@ -132,7 +164,7 @@ module wedgeA() {
 }
 
 module wedgeB() {
-    rotate_extrude($fn=PRECISION)
+    rotate_extrude()
     polygon( points=[
         [0,0],
         [GEAR_RADIUS,0],
@@ -198,7 +230,7 @@ module armShape( arm_l, arm_r, with_stand=false ) {
             armSection();
     }
     translate( [-arm_r-ARM_W/2,arm_l,0] )
-    rotate_extrude(angle=110,$fn=PRECISION)
+    rotate_extrude(angle=110)
         translate( [arm_r,0,0] )
         armSection();
 }
@@ -224,58 +256,12 @@ module servoHornHole() {
     }
 }
 
-module pinceB(arm_l,arm_r) {
-    rotate( [0,0,ARM_I] )
-    difference() {
-        union() {
-            gearB();
-            wedgeB();
-            arm( arm_l, arm_r, with_stand=false );
-        }
-        cylinder(r=PINCE_B_HOLE/2,h=30,center=true);
-    }
-}
-
-module pinceA(arm_l,arm_r) {
-    rotate( [0,0,-ARM_I] )
-    difference() {
-        union() {
-            gearA();
-            wedgeA();
-            mirror( [1,0,0] )
-                arm( arm_l, arm_r, with_stand=true );
-        }
-        cylinder(r=PINCE_A_HOLE/2,h=30,center=true);
-        servoHornHole();
-    }
-}
-
-module clamp ( ratio=1 ) {
-    color(PINCE_A_COLOR)
-        translate( [-PITCHDIAMETER/2,0,0] )
-        pinceA( ratio*ARM_L, ratio*ARM_R );
-    color(PINCE_B_COLOR)
-        translate( [+PITCHDIAMETER/2,0,0] )
-        pinceB( ratio*ARM_L, ratio*ARM_R );
-}
-
-translate( [0,0,0] )
-    clamp ( ratio=1 );
-
-// import du module STL Catia pour comparaison
-*#
+// ----------------------------------------
+//                 Showcase
+// ----------------------------------------
 color(PINCE_A_COLOR)
-translate( [-PITCHDIAMETER/2,0,0] )
-rotate( [0,0,25.3] )
-translate([-0.25,2.6,-1.7])
-rotate( [0,0,-50.4] )
-    import( "../stl/old/PinceA.stl" );
-
-*#
+    translate( [-getClampPitchDiameter()/2,0,0] )
+    clampFingerAImpl( arm_l=2*getClampArmBaseLength(), $fn=50 );
 color(PINCE_B_COLOR)
-translate( [+PITCHDIAMETER/2,0,0] )
-rotate( [0,0,-25.3] )
-translate([0.26,4.19,5.3])
-rotate( [0,180,0] )
-rotate( [0,0,-36] )
-    import( "../stl/old/PinceB.stl" );
+    translate( [+getClampPitchDiameter()/2,0,0] )
+    clampFingerBImpl( arm_r=2*getClampArmBaseRadius(), $fn=50 );
