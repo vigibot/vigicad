@@ -11,10 +11,10 @@
  * Author:      Gilles Bouissac
  */
 
+use <extensions.scad>
 use <servo_sg90.scad>
 
 PRECISION=50;
-MFG = 0.01; // 2 Manifold Guard
 
 $fn = PRECISION;
 
@@ -105,7 +105,7 @@ module bevelBar ( h ) {
     // bevel parts that overlap
     linear_extrude( height=h ) {
         polygon ( [
-            [MFG,MFG], [MFG,-BEVEL], [-BEVEL,MFG], [MFG,MFG]
+            [mfg(),mfg()], [mfg(),-BEVEL], [-BEVEL,mfg()], [mfg(),mfg()]
         ]);
     }
 }

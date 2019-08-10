@@ -11,10 +11,10 @@
  * Author:      Quillès Jonathan / Gilles Bouissac
  */
 
+use <extensions.scad>
 use <hardware_shop.scad>
 
 PRECISION = 100;
-MFG = 0.01; // 2 Manifold Guard
 
 $fn = PRECISION;
 
@@ -34,7 +34,7 @@ WIRE_PASS_Y = 3;
 HORN_D=7.10;   // Horn placeholder large axis diameter
 HORN_d=4.2;    // Horn placeholder small axis diameter
 HORN_L=14.00;  // Inter axis distance
-HORN_T=2+MFG;      // Horn placeholder thickness
+HORN_T=2+mfg();      // Horn placeholder thickness
 HORN_AXIS_T=3; // Horn axis thickness
 HORN_AXIS_D=HORN_D; // Horn axis diameter
 
@@ -84,7 +84,7 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
             translate( [SERVO_HEAD_HEIGHT+HORN_T/2+HORN_AXIS_T,servoAxisPosY(),0] ) {
                 // Servo Box
                 translate ([SERVO_BOX_X/2, 0, 0])
-                    cube([SERVO_BOX_X+2*MFG, SERVO_BOX_X+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
+                    cube([SERVO_BOX_X+mfg(2), SERVO_BOX_X+mfg(2), SERVO_BOX_Z+mfg(2)], center = true);
 
                 // Servo Stand
                 translate ([SERVO_BOX_X-SERVO_STAND_OFFSET, 0, 0])
@@ -95,14 +95,14 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
                     -SERVO_HEAD_HEIGHT/2,
                     (SERVO_HEAD_WIDTH-SERVO_BOX_X)/2,
                     0])
-                    cube([SERVO_HEAD_HEIGHT+2*MFG, SERVO_HEAD_WIDTH+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
+                    cube([SERVO_HEAD_HEIGHT+mfg(2), SERVO_HEAD_WIDTH+mfg(2), SERVO_BOX_Z+mfg(2)], center = true);
 
                 // Space for wires
                 translate ([
                     SERVO_BOX_X-WIRE_PASS_X/2,
                     -(SERVO_BOX_X+WIRE_PASS_Y)/2,
                     0])
-                    cube([WIRE_PASS_X+2*MFG, WIRE_PASS_Y+2*MFG, SERVO_BOX_Z+2*MFG], center = true);
+                    cube([WIRE_PASS_X+mfg(2), WIRE_PASS_Y+mfg(2), SERVO_BOX_Z+mfg(2)], center = true);
             }
 
             // Required Horn
@@ -139,7 +139,7 @@ module servoCounterAxisHole ( ls=20, lp=0, lh=2 ) {
     offset_y = SERVO_AXIS_Y;
     translate ([offset_x, -offset_y, 0])
         rotate([0, -90, 0])
-        screwM2Tight (ls,lp,lh+MFG);
+        screwM2Tight (ls,lp,lh+mfg());
 }
 
 

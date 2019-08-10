@@ -11,6 +11,8 @@
  * Author:      Gilles Bouissac
  */
 
+use <../lib/extensions.scad>
+
 // ----------------------------------------
 //                  API
 // ----------------------------------------
@@ -26,7 +28,6 @@ module photoResistorCap() {
 //            Implementation
 // ----------------------------------------
 
-MFG = 0.01; // 2 Manifold Guard
 BEVEL  = 0.5 ;
 
 CAP_SZ = 6.6 ;
@@ -50,7 +51,7 @@ module photoResistorCapShape() {
 
 module photoResistorCapHoles() {
     translate( [0,0,CAP_SZ-CAP_HOLE_SZ] )
-        cylinder( r=CAP_HOLE_D/2, h=CAP_HOLE_SZ+MFG );
+        cylinder( r=CAP_HOLE_D/2, h=CAP_HOLE_SZ+mfg() );
 }
 
 // ----------------------------------------

@@ -13,7 +13,6 @@
 
 use <extensions.scad>
 
-MFG = 0.01; // 2 Manifold Guard
 RADIUSBEVEL = 0.5; // Default radius bevel
 CUTTER_W    = 1;
 
@@ -26,13 +25,15 @@ function getRadiusBevel() = RADIUSBEVEL;
 // Double diagonal bevels distant from width extruded in line
 module bevelCutLinear( length, width, b=RADIUSBEVEL ) {
     // Cutter
-    translate ( [-width/2-MFG, -CUTTER_W, 0] )
-        cube( [width+2*MFG,CUTTER_W,length+2*MFG] );
+    translate ( [-width/2-mfg(), -CUTTER_W, 0] )
+        cube( [width+2*mfg(),CUTTER_W,length+2*mfg()] );
     // Bevel
-    mirrorY()
-    translate ( [-width/2, 0, -MFG] )
-    linear_extrude( height=length+2*MFG )
-        bevelDiagonalSection ( b );
+    if ( bevelActive() ) {
+        mirrorY()
+        translate ( [-width/2, 0, -mfg()] )
+        linear_extrude( height=length+mfg(2) )
+            bevelDiagonalSection ( b );
+    }
 }
 
 // Double diagonal bevels distant from width extruded in quater of circle
@@ -44,33 +45,38 @@ module bevelCutArc( radius, width, angle=90, b=RADIUSBEVEL ) {
         rotate_extrude( angle=angle )
             bevelCutterSection ( radius, radius/cos(angle/2), width/2 );
         // Bevel
-        rotate_extrude( angle=angle )
-            translate ( [radius, width/2, 0] )
-            rotate( [0,0,180] )
-            bevelDiagonalSection ( b );
+        if ( bevelActive() ) {
+            rotate_extrude( angle=angle )
+                translate ( [radius, width/2, 0] )
+                rotate( [0,0,180] )
+                bevelDiagonalSection ( b );
+        }
     }
 }
+
 //
 // ----------------------------------------
 //            Implementation
 // ----------------------------------------
 
+function bevelActive() = is_undef($bevel) ? true : $bevel;
+
 // This is a simple rectangle
 module bevelCutterSection ( x1, x2, sizey ) {
     polygon([
-        [x1,         0],
-        [x2+MFG,     0],
-        [x2+MFG, sizey+MFG],
-        [x1,     sizey+MFG]
+        [x1,       0],
+        [x2+mfg(), 0],
+        [x2+mfg(), sizey+mfg()],
+        [x1,       sizey+mfg()]
     ]);
 }
 
 // Section of a diagonal (linear 45 deg) bevel
 module bevelDiagonalSection ( radius ) {
     polygon([
-        [-MFG,       -MFG],
-        [radius,     -MFG],
-        [-MFG,       radius],
+        [-mfg(),       -mfg()],
+        [radius,       -mfg()],
+        [-mfg(),       radius],
     ]);
 }
 

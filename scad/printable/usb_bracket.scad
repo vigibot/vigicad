@@ -11,6 +11,7 @@
  * Author:      Gilles Bouissac
  */
 
+use <../lib/extensions.scad>
 use <../lib/hardware_shop.scad>
 
 // ----------------------------------------
@@ -40,7 +41,6 @@ module usbBracketHoles() {
 //            Implementation
 // ----------------------------------------
 
-MFG = 0.01; // 2 Manifold Guard
 BEVEL = 0.5;
 
 PLATE_SX  = 28 ;
@@ -70,9 +70,9 @@ module usbBracketShape() {
                 translate( [PLATE_SX/2-BEVEL/2,0,0] )
                     cube ( [PLATE_SX-BEVEL, PLATE_SY-2*BEVEL, PLATE_SZ-2*BEVEL], center=true);
                 translate( [PLATE_SX-BEVEL-CORNER_R/2,+PLATE_SY/2-BEVEL-CORNER_R/2,0] )
-                    cube ( [CORNER_R+MFG, CORNER_R+MFG, PLATE_SZ*2], center=true);
+                    cube ( [CORNER_R+mfg(), CORNER_R+mfg(), PLATE_SZ*2], center=true);
                 translate( [PLATE_SX-BEVEL-CORNER_R/2,-PLATE_SY/2+BEVEL+CORNER_R/2,0] )
-                    cube ( [CORNER_R+MFG, CORNER_R+MFG, PLATE_SZ*2], center=true);
+                    cube ( [CORNER_R+mfg(), CORNER_R+mfg(), PLATE_SZ*2], center=true);
             }
             translate( [PLATE_SX-CORNER_R,+PLATE_SY/2-CORNER_R,0] )
                 cylinder(r=CORNER_R-BEVEL, h=PLATE_SZ-2*BEVEL, center=true);

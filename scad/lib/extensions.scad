@@ -52,3 +52,9 @@ module mirrorXY( mirrorx=true, mirrory=true ) {
 
 // flatten([[0,1],[2,3]]) => [0,1,2,3]
 function flatten(list) = [ for (i = list, v = i) v ];
+
+// ManiFold Guard
+MFG = 0.01;
+function mfg(mult=1) = is_undef($mfg) ? mult*MFG : mult*$mfg;
+
+
