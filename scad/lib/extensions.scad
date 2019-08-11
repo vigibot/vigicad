@@ -57,4 +57,5 @@ function flatten(list) = [ for (i = list, v = i) v ];
 MFG = 0.01;
 function mfg(mult=1) = is_undef($mfg) ? mult*MFG : mult*$mfg;
 
-
+// Modulo
+function mod(a,m) = a - m*floor(a/m);
