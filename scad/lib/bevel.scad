@@ -36,6 +36,58 @@ module bevelCutLinear ( length, width, b=RADIUSBEVEL ) {
     }
 }
 
+// Concave corner angle of a plate
+//    Actually we can achive this goal with 2 bevelCutLinear rotated by 90°
+//    module bevelCutCorner ( radius, width, angle=90, b=RADIUSBEVEL ) {
+//    }
+
+// Concave corner angle of a plate
+module bevelCutCornerConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
+
+    diagonal = (radius + b)/cos( angle/2 );
+    longSide = (radius + b)*tan( angle/2 );
+    cutterDiag = radius/cos( angle/2 );
+    cutterSide = radius*tan( angle/2 );
+
+    // Cutter
+    rotate( [0,0,angle/2] )
+        mirrorZ()
+        mirrorX()
+        translate ( [+cutterDiag, 0, 0] )
+        rotate( [0,0,90-angle/2] )
+        translate ( [-cutterSide, 0, 0] )
+        linear_extrude( height=width/2 )
+            polygon([
+                [0,        0],
+                [cutterSide, 0],
+                [0,        radius],
+            ]);
+    // Bevel
+    if ( bevelActive() ) {
+        rotate( [0,0,angle/2] )
+        mirrorZ()
+            mirrorX()
+            translate ( [diagonal, 0, 0] )
+            difference() {
+                rotate( [0,0,90-angle/2] )
+                translate ( [-longSide, 0, 0] )
+                linear_extrude( height=width/2 )
+                    polygon([
+                        [0,        0],
+                        [longSide, 0],
+                        [0,        radius + b],
+                    ]);
+                translate ( [0, 0, width/2-b] )
+                rotate( [0,0,90-angle/2] )
+                rotate( [0,-90,0] )
+                linear_extrude( height=longSide )
+                    bevelDiagonalSection ( b );
+                rotate( [0,0,180-angle/2] )
+                    cube( [b,longSide,width/2-b] );
+        }
+    }
+}
+
 // Convex circular beveling of a plate
 module bevelCutArc ( radius, width, angle=90, b=RADIUSBEVEL ) {
     // tan(+-90) = infinite
@@ -123,6 +175,9 @@ module bevelShow() {
             [-3,-10],
             [0,-10],
             [0,-5],
+            [-1,-4],
+            [-2,-4],
+            [-2,0],
             [-5,0],
             [0,5]
         ]);
@@ -179,18 +234,42 @@ module bevelShow() {
             }
 
             color("yellow") {
-                translate ( [-5, 0, 0] )
+                translate ( [0, -5, 0] )
+                    bevelCutArcConcave( 0, 2, 45 );
+
+                translate ( [-1, -4, 0] )
                     rotate( [0,0,-45] )
                     rotate( [0,90,0] )
-                    bevelCutLinear( 5/cos(45), 2 );
+                    bevelCutLinear( 1/cos(45), 2 );
+
+                translate ( [-1, -4, 0] )
+                    rotate( [0,0,45] )
+                    bevelCutCornerConcave( 0, 2, 45 );
+
+                translate ( [-2, -4, 0] )
+                    rotate( [0,0,0] )
+                    rotate( [0,90,0] )
+                    bevelCutLinear( 1, 2 );
+            }
+
+            color("cyan") {
+                translate ( [-2, 0, 0] )
+                    rotate( [90,0,0] )
+                    rotate( [0,0,-90] )
+                    bevelCutLinear( 4, 2 );
+
+                translate ( [-2, 0, 0] )
+                    bevelCutCornerConcave( 0, 2, 90 );
+
+                translate ( [-5, 0, 0] )
+                    rotate( [0,90,0] )
+                    bevelCutLinear( 3, 2 );
 
                 translate ( [-5, 0, 0] )
                     rotate( [0,0,-135] )
                     rotate( [0,-90,0] )
                     bevelCutLinear( 5/cos(45), 2 );
 
-                translate ( [0, -5, 0] )
-                    bevelCutArcConcave( 0, 2, 45 );
             }
         }
     }
