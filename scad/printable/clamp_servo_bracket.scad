@@ -225,7 +225,7 @@ module clampHolder() {
 clampHolder();
 
 
-//%import( "../../stl/clamp_servo_braket.stl" );
+//%import( "../../stl/clamp_servo_bracket.stl" );
 
 
 

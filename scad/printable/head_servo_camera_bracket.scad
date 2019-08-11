@@ -153,5 +153,5 @@ module smilingHead() {
 rotate([180, 0, 0])
     smilingHead();
 
-//%import( "../../stl/head_servo_camera_braket.stl" );
+//%import( "../../stl/head_servo_camera_bracket.stl" );
 

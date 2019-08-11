@@ -21,7 +21,7 @@ use <../printable/plate_bottom.scad>
 use <../printable/plate_middle.scad>
 use <../printable/plate_top_fan.scad>
 use <../printable/head_u_bracket.scad>
-use <../printable/head_pan_servo_braket.scad>
+use <../printable/head_pan_servo_bracket.scad>
 use <../printable/head_servo_camera_bracket.scad>
 use <../printable/clamp_u_bracket.scad>
 use <../printable/clamp_servo_bracket.scad>
