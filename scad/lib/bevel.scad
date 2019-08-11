@@ -36,25 +36,26 @@ module bevelCutLinear ( length, width, b=RADIUSBEVEL ) {
     }
 }
 
-// Concave corner angle of a plate
+// Convex corner beveling of a plate
 //    Actually we can achive this goal with 2 bevelCutLinear rotated by 90°
 //    module bevelCutCorner ( radius, width, angle=90, b=RADIUSBEVEL ) {
 //    }
 
-// Concave corner angle of a plate
+// Concave corner beveling of a plate
 module bevelCutCornerConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
 
-    diagonal = (radius + b)/cos( angle/2 );
-    longSide = (radius + b)*tan( angle/2 );
-    cutterDiag = radius/cos( angle/2 );
-    cutterSide = radius*tan( angle/2 );
+    alpha = angle;
+    diagonal = (radius + b)/cos( alpha/2 );
+    longSide = (radius + b)*tan( alpha/2 );
+    cutterDiag = radius/cos( alpha/2 );
+    cutterSide = radius*tan( alpha/2 );
 
     // Cutter
-    rotate( [0,0,angle/2] )
+    rotate( [0,0,alpha/2] )
         mirrorZ()
         mirrorX()
         translate ( [+cutterDiag, 0, 0] )
-        rotate( [0,0,90-angle/2] )
+        rotate( [0,0,90-alpha/2] )
         translate ( [-cutterSide, 0, 0] )
         linear_extrude( height=width/2 )
             polygon([
@@ -64,26 +65,30 @@ module bevelCutCornerConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
             ]);
     // Bevel
     if ( bevelActive() ) {
-        rotate( [0,0,angle/2] )
+        rotate( [0,0,alpha/2] )
         mirrorZ()
+        difference() {
+            mfg_x = mfg()*sin(alpha/2);
+            mfg_y = mfg()*cos(alpha/2);
+            diamond_mid_x = (radius+b)*cos(alpha/2)-mfg_x;
+            diamond_mid_y = (radius+b)*sin(alpha/2)+mfg_y;
+            linear_extrude( height=width/2 )
+                polygon([
+                    [-mfg_x,         0],
+                    [diamond_mid_x, +diamond_mid_y],
+                    [diagonal,       0],
+                    [diamond_mid_x, -diamond_mid_y],
+                    [-mfg_y,         0]
+                ]);
             mirrorX()
             translate ( [diagonal, 0, 0] )
-            difference() {
-                rotate( [0,0,90-angle/2] )
-                translate ( [-longSide, 0, 0] )
-                linear_extrude( height=width/2 )
-                    polygon([
-                        [0,        0],
-                        [longSide, 0],
-                        [0,        radius + b],
-                    ]);
                 translate ( [0, 0, width/2-b] )
-                rotate( [0,0,90-angle/2] )
+                rotate( [0,0,90-alpha/2] )
                 rotate( [0,-90,0] )
-                linear_extrude( height=longSide )
+                linear_extrude( height=longSide+mfg() )
                     bevelDiagonalSection ( b );
-                rotate( [0,0,180-angle/2] )
-                    cube( [b,longSide,width/2-b] );
+                rotate( [0,0,180-alpha/2] )
+                    cube( [b,longSide+mfg(),width/2-b] );
         }
     }
 }
