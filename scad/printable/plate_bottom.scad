@@ -51,8 +51,5 @@ module plateBottomShape() {
 // ----------------------------------------
 plateBottom($fn=100);
 
-%
-rotate( [0,0,0] )
-translate( [0,0,0] )
-    import( "../../stl/plate_bottom.stl" );
+//%import( "../../stl/plate_bottom.stl" );
 

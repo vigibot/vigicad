@@ -35,7 +35,4 @@ module plateTopFan() {
 // ----------------------------------------
 plateTopFan($fn=100);
 
-%
-translate( [0,0,0] )
-rotate( [0,0,0] )
-    import( "../../stl/plate_top_fan.stl" );
+// %import( "../../stl/plate_top_fan.stl" );

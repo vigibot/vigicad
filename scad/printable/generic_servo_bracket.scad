@@ -53,7 +53,7 @@ module chamfer() {
         ]);
 }
 
-module servo () {
+module servoInServoBracket () {
     //Servo Box
     cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
     
@@ -125,10 +125,12 @@ module servoBracket() {
     difference () {
         box();
         translate ( [HEAD_BOT_X/2, 33/2, SERVO_CENTER_Z])
-            servo ();
+            servoInServoBracket ();
         servoScrewHoles();
     }
 }
 
 rotate( [180,0,0])
     servoBracket();
+
+// %import( "../../stl/generic_servo_bracket.stl" );

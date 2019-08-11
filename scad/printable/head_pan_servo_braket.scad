@@ -75,6 +75,5 @@ module headPanServoBracketShow() {
 headPanServoBracket($fn=100);
 headPanServoBracketShow($fn=100);
 
-%
-import( "../../stl/head_pan_servo_braket.stl" );
+//%import( "../../stl/head_pan_servo_braket.stl" );
 

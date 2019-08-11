@@ -10,18 +10,28 @@
  * Author:      Gilles Bouissac
  */
 
+
+// 3D printer mode
+$bevel=true;
+// Laser cut mode
+// $bevel=false;
+
+
 use <../printable/plate_bottom.scad>
 use <../printable/plate_middle.scad>
 use <../printable/plate_top_fan.scad>
 use <../printable/head_u_bracket.scad>
+use <../printable/head_pan_servo_braket.scad>
 use <../printable/head_servo_camera_bracket.scad>
 use <../printable/clamp_u_bracket.scad>
 use <../printable/clamp_servo_bracket.scad>
 use <../printable/clamp_finger_a.scad>
 use <../printable/clamp_finger_b.scad>
 use <../printable/usb_bracket.scad>
+
 use <../lib/u_bracket.scad>
 use <../lib/servo_sg90.scad>
+use <../lib/plates.scad>
 
 $fn=100;
 
@@ -29,30 +39,35 @@ PLATE_MID_Z   = -50;
 PLATE_BOT_Z   = -65;
 HEAD_OFFSET_Z = 15;
 
-translate( [0,0,0] )
+translate( [0,0,0] ) {
     plateTopFan();
+    translate( [0,0,getMainPlateSZ()] )
+        headPanServoBracket();
+}
 
-translate( [0,0,PLATE_MID_Z] )
+translate( [0,0,PLATE_MID_Z] ) {
     plateMiddle();
+}
 
 translate( [0,0,PLATE_BOT_Z] )
     plateBottom();
 
-
-translate( [-47,0,3] ) {
-    rotate( [0,0,180] )
+rotate( [0,0,180] )
+toolPlateTargetLocation() {
     usbBracket();
 }
 
-translate( [54,0,HEAD_OFFSET_Z] ) {
+headPanTargetLocation()
+translate( [servoBoxSizeZ()/2,0,servoSizeX()-servoStandTopPosX()-getHeadPanBaseSZ()/2] )
+{
     uBracketHead();
     color("#58F", 0.8)
     uBracketServo(bodyRotation=0);
     color("#7aF", 0.8)
-    uBracketHeadServo();
+    uBracketHeadServo(180);
 }
 
-translate( [47.75,-32/2,HEAD_OFFSET_Z+10.85] ) {
+translate( [47.75,-28/2,HEAD_OFFSET_Z+6.5] ) {
     rotate( [0,0,90] )
     rotate( [90,0,0] )
     smilingHead();

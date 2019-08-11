@@ -27,5 +27,4 @@ module clampFingerB(ratio=1) {
 // ----------------------------------------
 clampFingerB( $fn=100 );
 
-*%
-import( "../../stl/clamp_finger_b.stl" );
+//%import( "../../stl/clamp_finger_b.stl" );

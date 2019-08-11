@@ -34,8 +34,5 @@ module plateMiddle() {
 // ----------------------------------------
 plateMiddle($fn=100);
 
-%
-translate( [0,0,0] )
-rotate( [0,0,0] )
-    import( "../../stl/plate_middle.stl" );
+//%import( "../../stl/plate_middle.stl" );
 

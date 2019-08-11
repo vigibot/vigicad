@@ -30,12 +30,12 @@ HP_BASE_SZ   = MAINPLATE_SZ ;
 HP_BASE_X    = getMainPlateSX()/2 - HP_BASE_SX ;
 HP_PLATE_X   = getMainPlateSX()/2;
 
-TOOL_PLATE_SY = 38 ;
-TOOL_BASE_SX  = 12 ;
-TOOL_BASE_SY  = TOOL_PLATE_SY-2*TOOL_BASE_SX ;
-TOOL_BASE_SZ  = 3 ;
-TOOL_PLATE_DX = 11.5; // offset of this plate from main plate
-TOOL_PLATE_X  = getMainPlateSX()/2 - TOOL_BASE_SX + TOOL_PLATE_DX;
+TOOL_BASE_SY    = 38 ;
+TOOL_BASE_SX    = 12.5 ;
+TOOL_BASE_SZ    = MAINPLATE_SZ ;
+TOOL_PLATE_X    = getMainPlateSX()/2;
+TOOL_STRAIT_DX  = 0.5+0.5*sin(22.5) ; // The strait part length
+TOOL_DIAG_DX    = TOOL_BASE_SX-TOOL_STRAIT_DX ;
 
 RADIUSCORNERS = 5;
 
@@ -98,18 +98,11 @@ module headPanPlate ( mirrorXHoles=[], noMirrorHoles=[] ) {
     }
 }
 
-module toolPlate ( tool_sx=0, plate_sy=TOOL_PLATE_SY, mirrorXHoles=[], noMirrorHoles=[] ) {
+module toolPlate ( plate_sy=TOOL_BASE_SY ) {
     difference() {
-        toolBaseShape( tool_sx, plate_sy );
-        toolPlateBevel( tool_sx, plate_sy );
-        toolBaseExtrude();
-
-        // Holes with no mirroring
-        screwArray ( flatten(noMirrorHoles) );
-
-        // Holes with X mirroring
-        mirrorX()
-            screwArray( flatten(mirrorXHoles) );
+        toolPlateShape( plate_sy );
+        toolPlateBevel( plate_sy );
+        toolPlateExtrude();
     }
 }
 
@@ -156,7 +149,7 @@ function getFanSimpleHoles() = [
 ];
 
 // ----------------------------------------
-//            Implementation
+//      Implementation: base elements
 // ----------------------------------------
 
 // Quater plate shape
@@ -165,7 +158,6 @@ module plateShape( platex, platey, platez, radius=getRadiusCorners() ) {
         cube([platex, platey, platez], center = true );
     }
 }
-
 // Quater plate bevels on external borders
 module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
     sx = platex - radius;
@@ -186,13 +178,11 @@ module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
         bevelCutArc( radius, sz );
     }
 }
-
 // Quater plate bevels on internal border along X
 module plateBevelInternalX ( platex, platez ) {
     rotate( [0,90,0] )
         bevelCutLinear( platex, platez );
 }
-
 // Quater plate bevels on internal border along X
 module plateBevelInternalY ( platey, platez ) {
     rotate( [-90,0,0] )
@@ -200,7 +190,14 @@ module plateBevelInternalY ( platey, platez ) {
         bevelCutLinear( platey, platez );
 }
 
+// ----------------------------------------
+//             HEAD PAN PLATE
+// ----------------------------------------
 
+module headPanTargetLocation() {
+    translate( [getHeadPanBaseX()+getHeadPanBaseSX(),0,getHeadPanBaseSZ()] )
+        children();
+}
 module headPanPlateShape( radius=getRadiusCorners() ) {
     translate( [getHeadPanBaseX(),0,0] )
     mirrorX()
@@ -220,76 +217,96 @@ module headPanPlateExtrude() {
         screwArray ( getRaspberryFourHoles() );
 }
 
+// ----------------------------------------
+//              TOOL PLATE
+// ----------------------------------------
 
-module toolBaseShape ( tool_sx, plate_sy, radius=getRadiusCorners() ) {
-    translate( [TOOL_PLATE_X,0,0] ) {
-        if ( tool_sx>radius ) {
-            mirrorX()
-                plateShape( tool_sx, plate_sy/2, TOOL_BASE_SZ, radius );
-        }
-        translate( [0,0,-TOOL_BASE_SZ/2] )
-        linear_extrude( height=TOOL_BASE_SZ ) {
-            polygon([
-                [0,plate_sy/2],
-                [-TOOL_BASE_SX,+(plate_sy-2*TOOL_BASE_SX)/2],
-                [-TOOL_BASE_SX,-(plate_sy-2*TOOL_BASE_SX)/2],
-                [0,-plate_sy/2]
-            ]);
-        }
-    }
+module toolPlateTargetLocation() {
+    translate( [getToolBaseX(),0,getToolBaseSZ()] )
+        children();
 }
-module toolPlateBevel(tool_sx, plate_sy, radius=getRadiusCorners()) {
+module toolPlateShape ( plate_sy=TOOL_BASE_SY, radius=getRadiusCorners() ) {
+    translate( [-TOOL_STRAIT_DX,0,-TOOL_BASE_SZ/2] )
+    linear_extrude( height=TOOL_BASE_SZ ) {
+        polygon([
+            [0,plate_sy/2],
+            [-TOOL_DIAG_DX,+(plate_sy-2*TOOL_DIAG_DX)/2],
+            [-TOOL_DIAG_DX,-(plate_sy-2*TOOL_DIAG_DX)/2],
+            [0,-plate_sy/2]
+        ]);
+    }
+    translate( [-TOOL_STRAIT_DX/2,0,] )
+        cube([TOOL_STRAIT_DX, plate_sy, TOOL_BASE_SZ], center = true );
+}
+module toolPlateBevel(plate_sy=TOOL_BASE_SY, radius=getRadiusCorners()) {
     // Bevel extruding
-    if ( tool_sx>radius ) {
-        translate( [TOOL_PLATE_X,0,0] )
-        mirrorX() {
-            plateBevel( tool_sx, plate_sy/2, TOOL_BASE_SZ, radius );
-            translate( [-TOOL_BASE_SX,0,0] ) {
-                plateBevelInternalY( plate_sy/2-TOOL_BASE_SX, TOOL_BASE_SZ );
-                translate( [0,-plate_sy/2+TOOL_BASE_SX,0] )
-                rotate( [0,0,-45] )
-                rotate( [0,90,0] )
-                    bevelCutLinear( TOOL_BASE_SX/cos(45), TOOL_BASE_SZ );
+    mirrorX() {
+        translate( [-TOOL_BASE_SX,0,0] ) {
+            plateBevelInternalY( plate_sy/2-TOOL_DIAG_DX, TOOL_BASE_SZ );
+            translate( [0,+plate_sy/2-TOOL_DIAG_DX,0] ) {
+                rotate( [0,0,-135] )
+                rotate( [0,-90,0] )
+                    bevelCutLinear( TOOL_DIAG_DX/cos(45), TOOL_BASE_SZ );
+                rotate( [0,180,0] )
+                    bevelCutArc( getRadiusBevel(), TOOL_BASE_SZ, 45 );
             }
         }
+        translate( [-TOOL_STRAIT_DX,+plate_sy/2,0] )
+            rotate( [0,0,90] )
+                bevelCutArc( getRadiusBevel(), TOOL_BASE_SZ, 45 );
+        translate( [0,+plate_sy/2,0] )
+            rotate( [0,0,180] )
+            rotate( [0,90,0] )
+                bevelCutLinear( TOOL_STRAIT_DX, TOOL_BASE_SZ );
     }
 }
-module toolBaseExtrude() {
+module toolPlateExtrude() {
     // Fixation extruding from Tools fixation
+    translate( [-TOOL_PLATE_X,0,0] )
     mirrorX() {
         screwArray ( getToolFourHoles() );
     }
 }
 
-
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-$fn = 50;
-plate(
-    mirrorXYHoles = [
-        getMotorsFourHoles(),
-        getRaspberryFourHoles(),
-        getMotorPcbFourHoles(),
-        getOblongFourHoles(),
-        getToolFourHoles(),
-    ]
-);
 
-translate( [0,0,getToolBaseSZ()] )
-toolPlate (40);
+module platesShow() {
 
-translate( [0,0,getToolBaseSZ()] )
-rotate( [0,0,180] ){
-    headPanPlate();
-    translate( [getHeadPanPlateX(),0,0] )
+    plate(
+        mirrorXYHoles = [
+            getMotorsFourHoles(),
+            getRaspberryFourHoles(),
+            getMotorPcbFourHoles(),
+            getOblongFourHoles(),
+            getToolFourHoles(),
+        ]
+    );
+
+    toolPlateTargetLocation() {
+        toolPlate ();
         mirrorX()
-        plateShape(20,20,2,2);
+            plateShape(10,TOOL_BASE_SY/2,2,2);
+    }
+
+    translate( [0,0,getToolBaseSZ()] )
+    rotate( [0,0,180] ){
+        headPanPlate();
+        translate( [getHeadPanPlateX(),0,0] )
+            mirrorX()
+            plateShape(20,20,2,2);
+    }
 }
 
-*
-%
-translate( [0,0,0] )
-rotate( [0,0,0] )
-    import( "../../stl/plate_middle.stl" );
+// 3D printer mode
+platesShow( $fn=50, $bevel=true );
+
+// Laser cut mode
+translate( [0,0,-30] )
+color( "silver" )
+platesShow( $fn=50, $bevel=false );
+
+
+//%import( "../../stl/plate_middle.stl" );
 

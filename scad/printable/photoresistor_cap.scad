@@ -51,7 +51,7 @@ module photoResistorCapShape() {
 
 module photoResistorCapHoles() {
     translate( [0,0,CAP_SZ-CAP_HOLE_SZ] )
-        cylinder( r=CAP_HOLE_D/2, h=CAP_HOLE_SZ+mfg() );
+        cylinder( r=CAP_HOLE_D/2, h=CAP_HOLE_SZ+1 );
 }
 
 // ----------------------------------------
@@ -59,8 +59,4 @@ module photoResistorCapHoles() {
 // ----------------------------------------
 photoResistorCap ($fn=100);
 
-%
-rotate( [0,0,90] )
-translate( [0,0,0] )
-    import( "../../stl/photoresistor_cap.stl" );
-
+//%import( "../../stl/photoresistor_cap.stl" );

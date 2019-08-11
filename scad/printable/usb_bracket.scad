@@ -12,28 +12,20 @@
  */
 
 use <../lib/extensions.scad>
+use <../lib/bevel.scad>
 use <../lib/hardware_shop.scad>
+use <../lib/plates.scad>
 
 // ----------------------------------------
 //                  API
 // ----------------------------------------
 
 module usbBracket() {
+    toolPlate();
     difference() {
-        minkowski() {
-            usbBracketShape();
-            usbBracketBevel();
-        }
-        usbBracketHoles();
-       %usbBracketHoles();
-    }
-}
-
-module usbBracketHoles() {
-    rotate( [180,0,0] ) {
-        translate( [HOLE1_X,+HOLE1_Y,6.5] ) screwM2(0,8);
-        translate( [HOLE1_X,-HOLE1_Y,6.5] ) screwM2(0,8);
-        translate( [HOLE2_X,+HOLE2_Y,6.5] ) screwM2(0,8);
+        usbBracketShape();
+        usbBracketBevel();
+        usbBracketExtrude();
     }
 }
 
@@ -41,84 +33,63 @@ module usbBracketHoles() {
 //            Implementation
 // ----------------------------------------
 
-BEVEL = 0.5;
-
-PLATE_SX  = 28 ;
-PLATE_SY  = 38 ;
-PLATE_SZ  = 3 ;
+PLATE_SX  = 27.5 ;
+PLATE_SY  = getToolBaseSY() ;
+PLATE_SZ  = getToolBaseSZ() ;
 
 HOLLOW_SX = 11;
 HOLLOW_SY = 19;
-HOLLOW_X  = 12;
+HOLLOW_X  = 11.5;
 HOLLOW_Y  = -10.5;
 
-HOLE1_X   = -2.5;
-HOLE1_Y   = 12;
-
-HOLE2_X   = -9;
-HOLE2_Y   = 0;
-
-CORNER_R  = 5;
-
-TOOL_BASE_SX = 12;
-TOOL_BASE_SY = 14; // Small side, large side is automatic
-
 module usbBracketShape() {
-    difference() {
-        union() {
-            difference() {
-                translate( [PLATE_SX/2-BEVEL/2,0,0] )
-                    cube ( [PLATE_SX-BEVEL, PLATE_SY-2*BEVEL, PLATE_SZ-2*BEVEL], center=true);
-                translate( [PLATE_SX-BEVEL-CORNER_R/2,+PLATE_SY/2-BEVEL-CORNER_R/2,0] )
-                    cube ( [CORNER_R+mfg(), CORNER_R+mfg(), PLATE_SZ*2], center=true);
-                translate( [PLATE_SX-BEVEL-CORNER_R/2,-PLATE_SY/2+BEVEL+CORNER_R/2,0] )
-                    cube ( [CORNER_R+mfg(), CORNER_R+mfg(), PLATE_SZ*2], center=true);
-            }
-            translate( [PLATE_SX-CORNER_R,+PLATE_SY/2-CORNER_R,0] )
-                cylinder(r=CORNER_R-BEVEL, h=PLATE_SZ-2*BEVEL, center=true);
-            translate( [PLATE_SX-CORNER_R,-PLATE_SY/2+CORNER_R,0] )
-                cylinder(r=CORNER_R-BEVEL, h=PLATE_SZ-2*BEVEL, center=true);
+    mirrorX()
+        difference() {
+            plateShape(PLATE_SX, PLATE_SY/2, PLATE_SZ);
+            plateBevel(PLATE_SX, PLATE_SY/2, PLATE_SZ);
         }
-        translate( [HOLLOW_X+HOLLOW_SX/2,HOLLOW_Y+HOLLOW_SY/2,0] )
-            cube ( [HOLLOW_SX+2*BEVEL, HOLLOW_SY+2*BEVEL, PLATE_SZ*2], center=true);
-    }
-    toolBase();
-}
-
-module usbBracketHoles() {
-    rotate( [180,0,0] ) {
-        translate( [HOLE1_X,+HOLE1_Y,6.5] ) screwM2(0,8);
-        translate( [HOLE1_X,-HOLE1_Y,6.5] ) screwM2(0,8);
-        translate( [HOLE2_X,+HOLE2_Y,6.5] ) screwM2(0,8);
-    }
-}
-
-module toolBase() {
-    height = PLATE_SZ-2*BEVEL;
-    translate( [0,0,-height/2] )
-    linear_extrude( height=height ) {
-        polygon([
-            [0,PLATE_SY/2-BEVEL],
-            [-TOOL_BASE_SX+BEVEL,+TOOL_BASE_SY/2-BEVEL*sin(22.5)],
-            [-TOOL_BASE_SX+BEVEL,-TOOL_BASE_SY/2+BEVEL*sin(22.5)],
-            [0,-PLATE_SY/2+BEVEL]
-        ]);
-    }
 }
 
 module usbBracketBevel() {
-    union() {
-        cylinder(r1 = BEVEL, r2 = 0, h = BEVEL, center = false);
-        translate([0, 0, -BEVEL])
-            cylinder(r1 = 0, r2 = BEVEL, h = BEVEL, center = false);
+    translate( [ HOLLOW_X+HOLLOW_SX/2, HOLLOW_Y+HOLLOW_SY/2, 0] ) {
+        mirrorXY() {
+            translate( [ -HOLLOW_SX/2, -HOLLOW_SY/2, 0] )
+                rotate( [0,0,90] )
+                rotate( [0,90,0] )
+                    bevelCutLinear( HOLLOW_SY/2, PLATE_SZ );
+            translate( [ -HOLLOW_SX/2, +HOLLOW_SY/2, 0] )
+                rotate( [0,90,0] )
+                bevelCutLinear( HOLLOW_SX/2, PLATE_SZ );
+
+            translate( [ +HOLLOW_SX/2, +HOLLOW_SY/2, 0] )
+                bevelCutCornerConcave( 0, PLATE_SZ );
+        }
     }
+}
+
+module usbBracketExtrude() {
+    translate( [HOLLOW_X+HOLLOW_SX/2,HOLLOW_Y+HOLLOW_SY/2,0] )
+        cube ( [HOLLOW_SX, HOLLOW_SY, 5*PLATE_SZ], center=true);
+}
+
+module usbBracketShow() {
+%    toolPlateExtrude();
+%    usbBracketExtrude();
 }
 
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-usbBracket($fn=50);
+MODE_3DPRINT = true;
 
-%
-import( "../../stl/usb_bracket.stl" );
+toolPlateTargetLocation() {
+    usbBracket     ( $fn=50, $bevel=MODE_3DPRINT );
+    usbBracketShow ( $fn=50 );
+}
 
+/*
+%toolPlateTargetLocation() {
+    translate( [-0.5,0,0] )
+    import( "../../stl/usb_bracket.stl" );
+}
+*/

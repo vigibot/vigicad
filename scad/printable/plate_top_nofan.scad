@@ -31,7 +31,4 @@ module plateTopNoFan() {
 // ----------------------------------------
 plateTopNoFan($fn=100);
 
-%
-translate( [0,0,0] )
-rotate( [0,0,0] )
-    import( "../../stl/plate_top_nofan.stl" );
+//%import( "../../stl/plate_top_nofan.stl" );

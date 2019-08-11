@@ -63,7 +63,7 @@ module chamfer() {
         ]);
 }
 
-module servo () {
+module servoInHeadBracket () {
     //Servo Box
     cube([SERVO_BOX_X, SERVO_BOX_X, SERVO_BOX_Z], center = true);
     
@@ -141,7 +141,7 @@ module smilingHead() {
     difference () {
         head();
         translate ([HEAD_BOT_X/2, 33/2, SERVO_CENTER_Z])
-            servo ();
+            servoInHeadBracket ();
         servoScrewHoles();
         translate ([HEAD_BOT_X/2, 28.75, SERVO_CENTER_Z])
            cameraHoles ();
@@ -152,3 +152,6 @@ module smilingHead() {
 
 rotate([180, 0, 0])
     smilingHead();
+
+//%import( "../../stl/head_servo_camera_braket.stl" );
+
