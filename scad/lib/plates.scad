@@ -61,6 +61,16 @@ function getToolBaseX()    = TOOL_PLATE_X;
 function getRadiusCorners() = RADIUSCORNERS;
 
 
+// Generic beveled rounded plate ([x, y, z], radius, bevel)
+
+module beveledRoundedPlate(plateParams, radius = getRadiusCorners(), bevel = getRadiusBevel()) {
+    mirrorXY()
+        difference() {
+            plateShape( plateParams[0]/2, plateParams[1]/2, plateParams[2]);
+            plateBevel(plateParams[0]/2, plateParams[1]/2, plateParams[2], radius, bevel );
+    }
+}
+
 // Main plate with given holes lists
 // - mirrorXYHoles:   Drill given holes 4 times (double mirroring)
 // - noMirrorHoles:   Drill given holes once
