@@ -78,7 +78,7 @@ module plate ( mirrorXYHoles=[], noMirrorHoles=[] ) {
     difference () {
         // Row shape
         mirrorXY()
-            plateShape( MAINPLATE_SX/2, MAINPLATE_SY/2, MAINPLATE_SZ, RADIUSCORNERS );
+            plateShape( MAINPLATE_SX/2, MAINPLATE_SY/2, MAINPLATE_SZ );
 
         // Bevels
         mirrorXY()
@@ -163,13 +163,13 @@ function getFanSimpleHoles() = [
 // ----------------------------------------
 
 // Quater plate shape
-module plateShape( platex, platey, platez, radius=getRadiusCorners() ) {
+module plateShape( platex, platey, platez ) {
     translate( [ platex/2, platey/2, 0 ] ) {
         cube([platex, platey, platez], center = true );
     }
 }
 // Quater plate bevels on external borders
-module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
+module plateBevel ( platex, platey, platez, radius=getRadiusCorners(), bevel=getRadiusBevel() ) {
     sx = platex - radius;
     sy = platey - radius;
     sz = platez;
@@ -177,15 +177,15 @@ module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
     translate ( [0, platey, 0 ] ) {
         rotate( [0,90,0] )
         rotate( [0,0,180] )
-            bevelCutLinear( sx, sz );
+            bevelCutLinear( sx, sz, b=bevel );
     }
     translate ( [platex, 0, 0 ] ) {
         rotate( [-90,0,0] )
         rotate( [0,0,90] )
-            bevelCutLinear( sy, sz );
+            bevelCutLinear( sy, sz, b=bevel );
     }
     translate ( [platex, platey, 0 ] ) {
-        bevelCutArc( radius, sz );
+        bevelCutArc( radius, sz, b=bevel );
     }
 }
 // Quater plate bevels on internal border along X
@@ -211,7 +211,7 @@ module headPanTargetLocation() {
 module headPanPlateShape( radius=getRadiusCorners() ) {
     translate( [getHeadPanBaseX(),0,0] )
     mirrorX()
-        plateShape( getHeadPanBaseSX(), getHeadPanBaseSY()/2, getHeadPanBaseSZ(), radius );
+        plateShape( getHeadPanBaseSX(), getHeadPanBaseSY()/2, getHeadPanBaseSZ() );
 }
 module headPanPlateBevel( radius=getRadiusCorners() ) {
     // Bevel extruding
@@ -297,7 +297,7 @@ module platesShow() {
     toolPlateTargetLocation() {
         toolPlate ();
         mirrorX()
-            plateShape(10,TOOL_BASE_SY/2,2,2);
+            plateShape(10,TOOL_BASE_SY/2,2);
     }
 
     translate( [0,0,getToolBaseSZ()] )
@@ -305,7 +305,7 @@ module platesShow() {
         headPanPlate();
         translate( [getHeadPanPlateX(),0,0] )
             mirrorX()
-            plateShape(20,20,2,2);
+            plateShape(20,20,2);
     }
 }
 

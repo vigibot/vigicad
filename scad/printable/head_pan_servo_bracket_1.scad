@@ -31,7 +31,7 @@ module headToolServoBracket() {
     difference() {
         union() {
             mirrorX()
-                plateShape(HEAD_TOOL_SX,HEAD_TOOL_SY/2,HEAD_TOOL_SZ,2);
+                plateShape(HEAD_TOOL_SX,HEAD_TOOL_SY/2,HEAD_TOOL_SZ);
         }
         headToolServoBracketBevel();
         headToolServoBracketExtrude();

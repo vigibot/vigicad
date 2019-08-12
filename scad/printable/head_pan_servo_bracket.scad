@@ -25,7 +25,6 @@ use <../lib/bevel.scad>
 SYMETRIC     = false;
 OFFSET       = 0;   //distance of servo in mm
 RADIUSBEVEL  = getRadiusBevel();
-RADIUSCORNER = 0;
 
 module headPanServoBracket() {
     difference() {
@@ -47,8 +46,7 @@ module headPanServoBracketShape() {
                     plateShape(
                         servoBoxSizeZ()+RADIUSBEVEL/2+OFFSET,
                         servoSizeY()/2,
-                        getMainPlateSZ(),
-                        RADIUSCORNER);
+                        getMainPlateSZ());
 }
 
 module headPanServoBracketExtrude() {
