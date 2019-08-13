@@ -6,35 +6,35 @@ PRECISION = 100;
 
 $fn = PRECISION;
 
-HEIGHT = 8;
-LENGTH = 12;
+HEIGHT = 10;
+LENGTH = 11;
 STANDWIDTH = 6;
 ARMWIDTH = 3;
-JOINTWIDTH = 3;
-SPACE = 1.8; 
-AXISOFFSET = 4;
+JOINTWIDTH = 6;
+SPACE = 2; 
+AXISOFFSET = 5;
 ARMRADIUSHOLE = 2.6;
 STANDRADIUSHOLE = 0.9;
 
 STANDSPACE = STANDWIDTH / 2 + SPACE / 2;
 
-RADIUS = 0;
-function getGlueMargin() = (RADIUS > getRadiusBevel()) ?  2 * RADIUS : 2 * getRadiusBevel() ;
-
-GLUEMARGIN = getGlueMargin();
+RADIUS = 5;
 
 module plate() {
     // Stand
-    translate([-LENGTH / 2 - JOINTWIDTH + GLUEMARGIN, 0, 0])
-        beveledRoundedPlate([LENGTH + GLUEMARGIN, STANDWIDTH, HEIGHT], RADIUS);
+    
+    translate([-LENGTH / 2 - JOINTWIDTH / 2, 0, 0])
+    rotate([90,0,0])
+        beveledRoundedPlate([LENGTH + JOINTWIDTH , HEIGHT,STANDWIDTH], RADIUS);
 
     // Joint
     translate([-JOINTWIDTH / 2, 0, 0])
-        beveledRoundedPlate([JOINTWIDTH, 2 * ARMWIDTH + STANDWIDTH + SPACE, HEIGHT], RADIUS);
+        beveledRoundedPlate([JOINTWIDTH, 2 * ARMWIDTH + STANDWIDTH + SPACE, HEIGHT], 0);
 
     // Arm
-    translate([LENGTH / 2 -  GLUEMARGIN, ARMWIDTH / 2 + STANDSPACE, 0])
-        beveledRoundedPlate([LENGTH + GLUEMARGIN, ARMWIDTH, HEIGHT], RADIUS);
+    translate([LENGTH / 2 -  JOINTWIDTH / 2, ARMWIDTH / 2 + STANDSPACE, 0])
+    rotate([90,0,0])
+        beveledRoundedPlate([LENGTH +  JOINTWIDTH, HEIGHT,ARMWIDTH], RADIUS);
 }
 
 module holes() {
