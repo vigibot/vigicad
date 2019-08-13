@@ -1,5 +1,6 @@
 use <../lib/extensions.scad>
 use <../lib/bevel.scad>
+use <../lib/plates.scad>
 
 PRECISION = 100;
 
@@ -17,18 +18,23 @@ STANDRADIUSHOLE = 0.9;
 
 STANDSPACE = STANDWIDTH / 2 + SPACE / 2;
 
+RADIUS = 0;
+function getGlueMargin() = (RADIUS > getRadiusBevel()) ?  2 * RADIUS : 2 * getRadiusBevel() ;
+
+GLUEMARGIN = getGlueMargin();
+
 module plate() {
     // Stand
-    translate([-LENGTH / 2 - JOINTWIDTH, 0, 0])
-        cube([LENGTH, STANDWIDTH, HEIGHT], center = true);
+    translate([-LENGTH / 2 - JOINTWIDTH + GLUEMARGIN, 0, 0])
+        beveledRoundedPlate([LENGTH + GLUEMARGIN, STANDWIDTH, HEIGHT], RADIUS);
 
     // Joint
     translate([-JOINTWIDTH / 2, 0, 0])
-        cube([JOINTWIDTH, 2 * ARMWIDTH + STANDWIDTH + SPACE, HEIGHT], center = true);
+        beveledRoundedPlate([JOINTWIDTH, 2 * ARMWIDTH + STANDWIDTH + SPACE, HEIGHT], RADIUS);
 
     // Arm
-    translate([LENGTH / 2, ARMWIDTH / 2 + STANDSPACE, 0])
-        cube([LENGTH, ARMWIDTH, HEIGHT], center = true);
+    translate([LENGTH / 2 -  GLUEMARGIN, ARMWIDTH / 2 + STANDSPACE, 0])
+        beveledRoundedPlate([LENGTH + GLUEMARGIN, ARMWIDTH, HEIGHT], RADIUS);
 }
 
 module holes() {
@@ -40,53 +46,12 @@ module holes() {
     // Arms
     translate([LENGTH - AXISOFFSET, ARMWIDTH / 2 + STANDSPACE, 0])
         rotate([90, 0, 0])
-            cylinder(r = ARMRADIUSHOLE, h = ARMWIDTH, center = true);
+            cylinder(r = ARMRADIUSHOLE, h = 2 * ARMWIDTH, center = true);
 }
 
-module bevels() {
-    // Arms outer
-    translate([-JOINTWIDTH, ARMWIDTH + STANDSPACE, 0])
-        rotate([180, 270, 0])
-            bevelCutLinear(LENGTH + JOINTWIDTH, HEIGHT);
-
-    // Arms inner
-    translate([LENGTH, STANDSPACE, 0])
-        rotate([0, 270, 0])
-            bevelCutLinear(LENGTH, HEIGHT);
-
-    // Arms top
-    translate([LENGTH, STANDSPACE, 0])
-        rotate([0, 90, 90])
-            bevelCutLinear(ARMWIDTH, HEIGHT);
-
-    // Joint outer
-    translate([-JOINTWIDTH, ARMWIDTH + STANDSPACE, 0])
-        rotate([0, 90, -90])
-            bevelCutLinear(ARMWIDTH + SPACE / 2, HEIGHT);
-
-    // Joint inner
-    translate([0, STANDSPACE, 0])
-        rotate([0, 270, 90])
-            bevelCutLinear(STANDSPACE, HEIGHT);
-
-    // Stand sides
-    translate([-JOINTWIDTH, STANDWIDTH / 2, 0])
-        rotate([180, 90, 0])
-            bevelCutLinear(LENGTH, HEIGHT);
-
-    // Stand bottom
-    translate([-LENGTH - JOINTWIDTH, STANDWIDTH / 2, 0])
-        rotate([0, 90, -90])
-            bevelCutLinear(STANDWIDTH, HEIGHT);
-}
-
-difference() {
-    mirrorX()
+mirrorX() {
+    difference() {
         plate();
-
-    mirrorX()
-        union() {
-            holes();
-            bevels();
-        }
+        holes();
+    }
 }
