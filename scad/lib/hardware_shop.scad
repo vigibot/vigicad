@@ -82,12 +82,12 @@ module screwMx ( ds, dp, dh, lt=10, lp=5, lh=2 ) {
 
 color( "cyan" )
 translate( [ -3, -3, 0 ] )
-screwM2Tight( $fn=50 );
+screwM2Tight( $fn=100 );
 
 color( "cyan" )
 translate( [  3, -3, 0 ] )
-screwM2( $fn=50 );
+screwM2( $fn=100 );
 
 color( "orange" )
 translate( [  -3, 3, 0 ] )
-screwM25( $fn=50 );
+screwM25( $fn=100 );

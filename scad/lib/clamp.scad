@@ -261,7 +261,7 @@ module servoHornHole() {
 // ----------------------------------------
 color(PINCE_A_COLOR)
     translate( [-getClampPitchDiameter()/2,0,0] )
-    clampFingerAImpl( arm_l=2*getClampArmBaseLength(), $fn=50 );
+    clampFingerAImpl( arm_l=2*getClampArmBaseLength(), $fn=100 );
 color(PINCE_B_COLOR)
     translate( [+getClampPitchDiameter()/2,0,0] )
-    clampFingerBImpl( arm_r=2*getClampArmBaseRadius(), $fn=50 );
+    clampFingerBImpl( arm_r=2*getClampArmBaseRadius(), $fn=100 );

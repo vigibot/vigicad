@@ -122,7 +122,7 @@ module bracketBevel() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-headPanBracket($fn=50);
+headPanBracket($fn=100);
 % rotate( [180,90,0] ) {
     translate( [20.3,5.5,-6.5] ) {
             servo(180,bodyRotation=0);

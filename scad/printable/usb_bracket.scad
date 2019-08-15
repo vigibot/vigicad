@@ -83,8 +83,8 @@ module usbBracketShow() {
 MODE_3DPRINT = true;
 
 toolPlateTargetLocation() {
-    usbBracket     ( $fn=50, $bevel=MODE_3DPRINT );
-    usbBracketShow ( $fn=50 );
+    usbBracket     ( $fn=100, $bevel=MODE_3DPRINT );
+    usbBracketShow ( $fn=100 );
 }
 
 /*

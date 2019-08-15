@@ -310,12 +310,12 @@ module platesShow() {
 }
 
 // 3D printer mode
-platesShow( $fn=50, $bevel=true );
+platesShow( $fn=100, $bevel=true );
 
 // Laser cut mode
 translate( [0,0,-30] )
 color( "silver" )
-platesShow( $fn=50, $bevel=false );
+platesShow( $fn=100, $bevel=false );
 
 
 //%import( "../../stl/plate_middle.stl" );
