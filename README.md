@@ -17,7 +17,7 @@
 
 - Raspberry PI 2 / Raspberry PI 3 / Raspberry PI 3 A+ / Raspberry PI 3 B+ / Raspberry PI 4
 - An aftermarket *wide-angle lens* camera module v1 clone is highly recommended
-  - The "genuine" camera module v1 or v2 use pinhole lens and are are bad for first person view piloting
+  - The "genuine" camera module v1 or v2 use pinhole lens and are bad for first person view piloting
   - There is only one camera module v1 clone that combines a *wide-angle lens* and a motorized IR-cut filter at time of writing
     - https://www.robot-maker.com/shop/capteurs/311-camera-raspberry-pi.html
     - https://www.aliexpress.com/item/32957419294.html
