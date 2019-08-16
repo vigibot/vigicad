@@ -34,9 +34,9 @@
     - This modification solve the charger that does not start after a power cut
       - https://brousant.nl/jm3/elektronica/105-geekworm-ups-for-raspberry-pi-simple-modification-detailed
 - Hex standoffs
-  - Four 12mm lenght standoffs between the Raspberry PI and UPS hat board
-  - Four 25mm lenght standoffs between the UPS hat board and middle plate
-  - Four 10mm lenght standoffs between the middle plate and bottom plate
+  - Four 12mm length standoffs between the Raspberry PI and UPS hat board
+  - Four 25mm length standoffs between the UPS hat board and middle plate
+  - Four 10mm length standoffs between the middle plate and bottom plate
 - 40mm fan for the top plate
   - https://www.amazon.fr/gp/product/B07D5QBFLK/ref=ppx_yo_dt_b_asin_title_o01_s00
 - Cables
