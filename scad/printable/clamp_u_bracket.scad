@@ -109,8 +109,8 @@ module uBracketClamp() {
 //
 // ------------------------------
 
- uBracketClamp();
-%uBracketClampServo();
-%uBracketClampHoles();
+ uBracketClamp($fn=100);
+%uBracketClampServo($fn=100);
+%uBracketClampHoles($fn=100);
 
-%import( "../../stl/clamp_u_bracket.stl" );
+//%import( "../../stl/clamp_u_bracket.stl" );

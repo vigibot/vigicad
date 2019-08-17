@@ -26,7 +26,7 @@ module servoFinger(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) 
             mirror( [1,0,0] )
                 arm( arm_l, arm_r, with_stand=true );
         }
-        cylinder(r=PINCE_A_HOLE/2,h=30,center=true);
+        cylinder(r=PINCE_B_HOLE/2,h=30,center=true);
         servoHornHole();
     }
 }
