@@ -18,6 +18,19 @@ use <../../../PressureAngleGear/StraightGearLib.scad>
 //                  API
 // ----------------------------------------
 
+module servoFinger(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
+    rotate( [0,0,-ARM_I] )
+    difference() {
+        union() {
+            wedgeC();
+            mirror( [1,0,0] )
+                arm( arm_l, arm_r, with_stand=true );
+        }
+        cylinder(r=PINCE_A_HOLE/2,h=30,center=true);
+        servoHornHole();
+    }
+}
+
 module clampFingerAImpl(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
     rotate( [0,0,-ARM_I] )
     difference() {
@@ -64,8 +77,6 @@ GEAR_RADIUS=4.14;
 THICKNESS=3;
 PINCE_A_HOLE=1.8;
 PINCE_B_HOLE=2.2;
-PINCE_A_COLOR="DeepSkyBlue";
-PINCE_B_COLOR="Cyan";
 
 ARM_W=7.5;   // Width: largeur du bras
 ARM_T=5;     // Thickness: epaisseur du bras
@@ -174,6 +185,27 @@ module wedgeB() {
     ]);
 }
 
+module wedgeC() {
+    // diam 1:  STAND_W  / STAND_W/2
+    // diam 2:  11.0     / 5.5
+    // diam 3:  8.4      / 4.2
+    // h section 1: 3.25 / 3.25
+    // h section 2: 1.3  / 4.55
+    // h section 3: 1.65 / 6.2
+    // h section 4: 1.3  / 7.5
+    rotate_extrude()
+    polygon( points=[
+        [0,0],
+        // Elargissement de la base pour masquer
+        //   le bas du bras renforcé
+        [GEAR_RADIUS + WA_B-ARM_B,0],
+        [GEAR_RADIUS + WA_B,0 + ARM_B],
+        [GEAR_RADIUS + WA_B,WA_H - WA_B],
+        [GEAR_RADIUS,WA_H],
+        [0,WA_H]
+    ]);
+}
+
 module cutFingers() {
     translate( [-PITCHDIAMETER/2,0,0] )
     translate( [0,25,0] )
@@ -181,8 +213,8 @@ module cutFingers() {
     linear_extrude(height=100)
     polygon( points=[
         [ARM_B,0],
-        [-10,0],
-        [-10,-ARM_T],
+        [-100,0],
+        [-100,-ARM_T],
         [ARM_B,-ARM_T],
         [0,-ARM_T+ARM_B],
         [0,-ARM_B]
@@ -259,9 +291,16 @@ module servoHornHole() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-color(PINCE_A_COLOR)
+color("DeepSkyBlue")
     translate( [-getClampPitchDiameter()/2,0,0] )
     clampFingerAImpl( arm_l=2*getClampArmBaseLength(), $fn=100 );
-color(PINCE_B_COLOR)
+color("Cyan")
     translate( [+getClampPitchDiameter()/2,0,0] )
     clampFingerBImpl( arm_r=2*getClampArmBaseRadius(), $fn=100 );
+color("green")
+    translate( [50,0,0] )
+    servoFinger($fn=100);
+color("lime")
+    translate( [50+getClampPitchDiameter(),0,0] )
+    mirror( [1,0,0] )
+    servoFinger($fn=100);
