@@ -10,12 +10,15 @@
  * Design:      Quillès Jonathan / Pascal Piazzalungua
  * Author:      Quillès Jonathan
  */
+use <../lib/extensions.scad>
+use <../lib/bevel.scad>
+use <../lib/plates.scad>
 
 PRECISION = 100;
 
 $fn = PRECISION;
 
-HEAD_Z = 12;
+
 HEAD_TOP_X = 32;
 HEAD_BOT_X = 30; 
 HEAD_BOT_Y = 19.75;
@@ -31,28 +34,48 @@ SERVO_HEAD_WIDTH = 23;
 SERVO_HEAD_HEIGHT = 5;
 SERVO_CENTER_Z = 6.25;
 
+PLATE_WIDTH = 3;
 INTER_AXIS = 21;
 OFFSET_AXIS = 9;
 RADIUS = 1.5;
 AXIS_HEIGHT = 17.5;
+PLATE_HEIGHT = 9;
+
 
 module box () {
     translate ( [10, 0, 0])
-    cube([20, 33, HEAD_Z]);
+    cube([20, SERVO_STAND_LENGTH, SERVO_BOX_Z]);
+    translate ( [INTER_AXIS/2 + OFFSET_AXIS, -PLATE_WIDTH/2, SERVO_BOX_Z/2]) 
+    cube([INTER_AXIS, PLATE_WIDTH, SERVO_BOX_Z], center = true);
    difference() {
-    translate ( [5, -3, 0]) 
-       cube([29, 3, 23]);
+       translate ( [INTER_AXIS/2 + OFFSET_AXIS, -PLATE_WIDTH/2, SERVO_BOX_Z + PLATE_HEIGHT/2]) 
+       rotate( [90,-90,0] )
+       cube([PLATE_HEIGHT, 29, PLATE_WIDTH], center = true);
     translate ( [OFFSET_AXIS, 0, AXIS_HEIGHT])
     rotate( [90,0,0] )
     cylinder ( r=RADIUS, h=25, center=true );
     translate ( [OFFSET_AXIS + INTER_AXIS, 0, AXIS_HEIGHT])
     rotate( [90,0,0] )
     cylinder ( r=RADIUS, h=25, center=true );
+    translate ( [5, 0, SERVO_BOX_Z])
+    rotate( [90,0,0] )  
+     linear_extrude ( height=HEAD_TOP_X+10 )
+       
+        polygon ( [
+            [4,0], [0,4], [0,0]
+        ]);
+    translate ( [5 + 29, 0, SERVO_BOX_Z])
+    rotate( [90,-90,0] )  
+     linear_extrude ( height=HEAD_TOP_X+10 )
+       
+        polygon ( [
+            [4,0], [0,4], [0,0]
+        ]);
    }
 }
 
 module chamfer() {
-    translate ( [ -5, -0.5, HEAD_Z + 0.5 ])
+    translate ( [ -5, -0.5, SERVO_BOX_Z ])
     rotate( [0,90,0] )
     linear_extrude ( height=HEAD_TOP_X+10 )
         polygon ( [
@@ -108,7 +131,7 @@ module servoScrewHoles() {
 module servoBracket() {
     difference () {
         box();
-        translate ( [HEAD_BOT_X/2, 33/2, SERVO_CENTER_Z])
+        translate ( [HEAD_BOT_X/2, SERVO_STAND_LENGTH/2, SERVO_CENTER_Z])
             servoInServoBracket ();
         servoScrewHoles();
     }
