@@ -63,11 +63,11 @@ function getRadiusCorners() = RADIUSCORNERS;
 
 // Generic beveled rounded plate ([x, y, z], radius, bevel)
 
-module beveledRoundedPlate(plateParams, radius = getRadiusCorners(), bevel = getRadiusBevel()) {
+module beveledRoundedPlate(plateParams, radius = getRadiusCorners()) {
     mirrorXY()
         difference() {
             plateShape( plateParams[0]/2, plateParams[1]/2, plateParams[2]);
-            plateBevel(plateParams[0]/2, plateParams[1]/2, plateParams[2], radius, bevel );
+            plateBevel(plateParams[0]/2, plateParams[1]/2, plateParams[2], radius );
     }
 }
 
@@ -169,7 +169,7 @@ module plateShape( platex, platey, platez ) {
     }
 }
 // Quater plate bevels on external borders
-module plateBevel ( platex, platey, platez, radius=getRadiusCorners(), bevel=getRadiusBevel() ) {
+module plateBevel ( platex, platey, platez, radius=getRadiusCorners() ) {
     sx = platex - radius;
     sy = platey - radius;
     sz = platez;
@@ -177,15 +177,15 @@ module plateBevel ( platex, platey, platez, radius=getRadiusCorners(), bevel=get
     translate ( [0, platey, 0 ] ) {
         rotate( [0,90,0] )
         rotate( [0,0,180] )
-            bevelCutLinear( sx, sz, b=bevel );
+            bevelCutLinear( sx, sz );
     }
     translate ( [platex, 0, 0 ] ) {
         rotate( [-90,0,0] )
         rotate( [0,0,90] )
-            bevelCutLinear( sy, sz, b=bevel );
+            bevelCutLinear( sy, sz );
     }
     translate ( [platex, platey, 0 ] ) {
-        bevelCutArc( radius, sz, b=bevel );
+        bevelCutArc( radius, sz );
     }
 }
 // Quater plate bevels on internal border along X

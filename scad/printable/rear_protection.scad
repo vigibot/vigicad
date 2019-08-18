@@ -57,9 +57,4 @@ toolPlateTargetLocation() {
     rearProtectionShow ( $fn=100 );
 }
 
-/*
-%toolPlateTargetLocation() {
-    translate( [-0.5,0,0] )
-    import( "../../stl/rear_protection.stl" );
-}
-*/
+//%import( "../../stl/rear_protection.stl" );

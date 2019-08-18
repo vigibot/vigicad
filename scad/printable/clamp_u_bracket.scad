@@ -113,4 +113,8 @@ module uBracketClamp() {
 %uBracketClampServo($fn=100);
 %uBracketClampHoles($fn=100);
 
-//%import( "../../stl/clamp_u_bracket.stl" );
+/*
+%
+translate( [8.6,0,1.16] )
+import( "../../stl/clamp_u_bracket.stl" );
+*/

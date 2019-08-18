@@ -16,14 +16,13 @@ use <extensions.scad>
 RADIUSBEVEL        = 0.5; // Default radius bevel
 CUTTER_W           = 1;
 
-function getRadiusBevel() = RADIUSBEVEL;
-
 // ----------------------------------------
 //                  API
 // ----------------------------------------
 
 // Line beveling of a plate
-module bevelCutLinear ( length, width, b=RADIUSBEVEL ) {
+module bevelCutLinear ( length, width ) {
+    b = getRadiusBevel();
     // Cutter
     translate ( [-width/2, -CUTTER_W, 0] )
         cube( [width,CUTTER_W,length] );
@@ -32,7 +31,7 @@ module bevelCutLinear ( length, width, b=RADIUSBEVEL ) {
         mirrorY()
         translate ( [-width/2, 0, 0] )
         linear_extrude( height=length )
-            bevelDiagonalSection ( b );
+            bevelProfileModule ( b );
     }
 }
 
@@ -42,59 +41,66 @@ module bevelCutLinear ( length, width, b=RADIUSBEVEL ) {
 //    }
 
 // Concave corner beveling of a plate
-module bevelCutCornerConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
+module bevelCutCornerConcave ( radius, width, angle=90 ) {
 
-    alpha = angle;
-    diagonal = (radius + b)/cos( alpha/2 );
-    longSide = (radius + b)*tan( alpha/2 );
-    cutterDiag = radius/cos( alpha/2 );
-    cutterSide = radius*tan( alpha/2 );
+    b = getRadiusBevel();
+    diagonal = (radius + b)/cos( angle/2 );
+    cutterDiag = radius/cos( angle/2 );
+    cutterSide = radius*tan( angle/2 );
 
     // Cutter
-    rotate( [0,0,alpha/2] )
+    rotate( [0,0,angle/2] )
         mirrorZ()
         mirrorX()
         translate ( [+cutterDiag, 0, 0] )
-        rotate( [0,0,90-alpha/2] )
+        rotate( [0,0,90-angle/2] )
         translate ( [-cutterSide, 0, 0] )
         linear_extrude( height=width/2 )
             polygon([
-                [0,        0],
+                [0,          0],
                 [cutterSide, 0],
-                [0,        radius],
+                [0,          radius],
             ]);
     // Bevel
     if ( bevelActive() ) {
-        rotate( [0,0,alpha/2] )
+        longSide  = (radius + b)*tan( angle/2 );
+        longSideX = (longSide+mfg())*sin(angle/2);
+        longSideY = (longSide+mfg())*cos(angle/2);
+
+        rotate( [0,0,angle/2] )
         mirrorZ()
+        translate ( [diagonal, 0, 0] ) 
         difference() {
-            mfg_x = mfg()*sin(alpha/2);
-            mfg_y = mfg()*cos(alpha/2);
-            diamond_mid_x = (radius+b)*cos(alpha/2)-mfg_x;
-            diamond_mid_y = (radius+b)*sin(alpha/2)+mfg_y;
+            mirrorX()
             linear_extrude( height=width/2 )
                 polygon([
-                    [-mfg_x,         0],
-                    [diamond_mid_x, +diamond_mid_y],
-                    [diagonal,       0],
-                    [diamond_mid_x, -diamond_mid_y],
-                    [-mfg_y,         0]
+                    [0,          0],
+                    [-diagonal,  0],
+                    [-longSideX,-longSideY],
                 ]);
+
             mirrorX()
-            translate ( [diagonal, 0, 0] )
-                translate ( [0, 0, width/2-b] )
-                rotate( [0,0,90-alpha/2] )
-                rotate( [0,-90,0] )
-                linear_extrude( height=longSide+mfg() )
-                    bevelDiagonalSection ( b );
-                rotate( [0,0,180-alpha/2] )
-                    cube( [b,longSide+mfg(),width/2-b] );
+            difference() {
+                linear_extrude( height=width/2 )
+                    polygon([
+                        [0,          0],
+                        [-diagonal,  0],
+                        [-longSideX,-longSideY],
+                    ]);
+                translate ( [-longSideX, -longSideY, width/2-b] )
+                    rotate( [0,0,-angle/2] )
+                    rotate( [-90,0,0] )
+                    translate ( [-b, -b, 0] )
+                    linear_extrude( height=longSide+2*mfg() )
+                    bevelProfileModule ( b );
+            }
         }
     }
 }
 
 // Convex circular beveling of a plate
-module bevelCutArc ( radius, width, angle=90, b=RADIUSBEVEL ) {
+module bevelCutArc ( radius, width, angle=90 ) {
+    b = getRadiusBevel();
     // tan(+-90) = infinite
     distance = mod(angle,180)==0 ? 0 : radius-radius*tan(angle/2);
     // 1/cos(90) = infinite
@@ -113,13 +119,14 @@ module bevelCutArc ( radius, width, angle=90, b=RADIUSBEVEL ) {
             rotate_extrude( angle=angle+2*mfg() )
                 translate ( [radius, width/2, 0] )
                 rotate( [0,0,180] )
-                bevelDiagonalSection ( b );
+                bevelProfileModule ( b );
         }
     }
 }
 
 // Concave circular beveling of a plate
-module bevelCutArcConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
+module bevelCutArcConcave ( radius, width, angle=90 ) {
+    b = getRadiusBevel();
     mirrorZ() {
         // Cutter
         rotate( [0,0,-mfg()] )
@@ -131,18 +138,31 @@ module bevelCutArcConcave ( radius, width, angle=90, b=RADIUSBEVEL ) {
             rotate_extrude( angle=angle+2*mfg() )
                 translate ( [radius, width/2, 0] )
                 rotate( [0,0,-90] )
-                bevelDiagonalSection ( b );
+                bevelProfileModule ( b );
         }
     }
 }
 
 
-//
 // ----------------------------------------
 //            Implementation
 // ----------------------------------------
+BEVEL_PROFILE_DIAGONAL = 0;
+BEVEL_PROFILE_ARC      = 1;
 
-function bevelActive() = is_undef($bevel) ? true : $bevel;
+function bevelActive() =
+    is_undef($bevel) ? true        : $bevel>0?true:false;
+function getRadiusBevel() =
+    is_undef($bevel)?
+        RADIUSBEVEL
+    :
+        is_bool($bevel)?
+            ($bevel?RADIUSBEVEL:0)
+        :
+            $bevel;
+function bevelProfile()          = is_undef($bevelProfile) ? BEVEL_PROFILE_DIAGONAL : $bevelProfile;
+function bevelDiagonal()         = BEVEL_PROFILE_DIAGONAL;
+function bevelArc()              = BEVEL_PROFILE_ARC;
 
 // This is a simple rectangle
 module bevelCutterSection ( x1, x2, sizey ) {
@@ -154,13 +174,32 @@ module bevelCutterSection ( x1, x2, sizey ) {
     ]);
 }
 
+// get the right profile according to $bevelProfile variable
+module bevelProfileModule ( radius ) {
+    if ( bevelProfile()==BEVEL_PROFILE_ARC ) {
+        bevelProfileArcModule( radius );
+    }
+    else {
+        bevelProfileDiagonalModule( radius );
+    }
+}
+
 // Section of a diagonal (linear 45 deg) bevel
-module bevelDiagonalSection ( radius ) {
+module bevelProfileDiagonalModule ( radius ) {
     polygon([
         [0,       0],
         [radius,  0],
         [0,       radius],
     ]);
+}
+
+// Section of a diagonal (linear 45 deg) bevel
+module bevelProfileArcModule ( radius ) {
+    difference() {
+        square( radius );
+        translate( [radius,radius,0] )
+            circle( r=radius );
+    }
 }
 
 // ----------------------------------------
@@ -264,7 +303,7 @@ module bevelShow() {
                     bevelCutLinear( 4, 2 );
 
                 translate ( [-2, 0, 0] )
-                    bevelCutCornerConcave( 0, 2, 90 );
+                    bevelCutCornerConcave( 0, 2 );
 
                 translate ( [-5, 0, 0] )
                     rotate( [0,90,0] )
@@ -279,5 +318,4 @@ module bevelShow() {
         }
     }
 }
-bevelShow($fn=100);
-
+bevelShow($fn=100, $bevelProfile=bevelArc(), $bevel=0.4);
