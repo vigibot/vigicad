@@ -29,7 +29,7 @@ SERVO_HEAD_WIDTH = 14.75;
 SERVO_HEAD_HEIGHT = 5;
 
 WIRE_PASS_X = 8;
-WIRE_PASS_Y = 3;
+WIRE_PASS_Y = 2.5;
 
 HORN_D=7.10;   // Horn placeholder large axis diameter
 HORN_d=4.2;    // Horn placeholder small axis diameter
