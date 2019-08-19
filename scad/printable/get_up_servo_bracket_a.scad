@@ -54,7 +54,7 @@ difference(){
                         [0, 0]
                     ]);
 }
-translate ([10, 31, 0]) cube([9,3,2]);
+translate ([10, 31, 0]) cube([9,3,2.5]);
 
 
 // fixating plate
