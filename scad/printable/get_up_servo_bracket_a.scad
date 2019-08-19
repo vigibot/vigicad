@@ -24,15 +24,38 @@ PLATE_WIDTH = 3;
 INTER_AXIS = 21;
 OFFSET_AXIS = 1;
 RADIUS = 1.5;
-AXIS_HEIGHT = 17.5;
-PLATE_HEIGHT = 9;
+AXIS_HEIGHT = 18;
+PLATE_HEIGHT = 9.5;
 CHAMFER = 4; 
 
 plate();
 difference(){
     box();
     #servoBracketExtrude();
+    translate ([INTER_AXIS + OFFSET_AXIS, 
+                        0, 
+                        0])
+    rotate([0, 270, 0])  
+                linear_extrude (INTER_AXIS)
+                    polygon ( [
+                        [2.6, 0], 
+                        [0, 2.6], 
+                        [0, 0]
+                    ]);
+    
+    translate ([INTER_AXIS + OFFSET_AXIS, 
+                        SERVO_STAND_LENGTH + PLATE_WIDTH , 
+                        0])
+    rotate([90, 270, 0])  
+                linear_extrude (SERVO_STAND_LENGTH + PLATE_WIDTH)
+                    polygon ( [
+                        [2.6, 0], 
+                        [0, 2.6], 
+                        [0, 0]
+                    ]);
 }
+translate ([10, 31, 0]) cube([9,3,2]);
+
 
 // fixating plate
 module plate() {
@@ -85,5 +108,3 @@ module servoBracketExtrude() {
             servoScrewHoles();
         }
 }
-
-//%import( "../../stl/get_up_servo_bracket_a.stl" );
