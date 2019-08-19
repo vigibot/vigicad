@@ -105,7 +105,7 @@ module bevelBar ( h ) {
     // bevel parts that overlap
     linear_extrude( height=h ) {
         polygon ( [
-            [mfg(),mfg()], [mfg(),-BEVEL], [-BEVEL,mfg()], [mfg(),mfg()]
+            [0,0], [0,-BEVEL], [-BEVEL,0], [0,0]
         ]);
     }
 }
