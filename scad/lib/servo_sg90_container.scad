@@ -13,6 +13,7 @@
 
 
 use <servo_sg90.scad>
+use <extensions.scad>
 
 // ----------------------------------------
 //                  API
@@ -24,19 +25,13 @@ module servoContainer( symetry=false, counterAxis=false, backWire=false ) {
     difference() {
         servoContainerShape();
         translate( [posx,posy,posz] ){
-            servo(backWireHole=backWire);
-            if ( symetry ) {
-                rotate( [180,0,0] ) {
-                    servo(backWireHole=backWire);
-                    if ( counterAxis ) {
-                        servoCounterAxisHole();
-                    }
+            mirrorX( symetry ) {
+                servo(backWireHole=backWire);
+                if ( counterAxis ) {
+                    servoCounterAxisHole();
                 }
             }
             servoScrewHoles();
-            if ( counterAxis ) {
-                servoCounterAxisHole();
-            }
         }
     }
 }
