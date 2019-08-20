@@ -14,7 +14,7 @@
 use <extensions.scad>
 use <servo_sg90.scad>
 
-PRECISION=50;
+PRECISION=100;
 
 $fn = PRECISION;
 

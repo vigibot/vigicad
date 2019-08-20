@@ -11,7 +11,7 @@
  * Author:      Gilles Bouissac
  */
 
-PRECISION=50;
+PRECISION=100;
 
 $fn = PRECISION;
 
