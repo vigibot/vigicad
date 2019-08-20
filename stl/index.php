@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
   <title>
-   STL
+   STL viewer
   </title>
 
   <script src="../../Online3DViewer/jsmodeler/three.min.js" type="text/javascript"></script>
@@ -18,28 +18,49 @@
  <body>
 
 <?php
+ $nbaff = 4;
+
+ $page = $_GET["page"];
+ if(!is_numeric($page) || $page < 0)
+  $page = 0;
+
  function human($bytes, $decimals = 2) {
   $sz = array("o", "Ko", "Mo", "Go", "To", "Po");
   $factor = floor((strlen($bytes) - 1) / 3);
   return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor))."&nbsp;".$sz[$factor];
  }
 
- $dir = opendir(".");
+ $files = array_diff(scandir("."), [
+  ".",
+  "..",
+  "index.php",
+  "style.css"
+ ]);
 
- while(($f = readdir($dir)) !== false) {
-  $ext = substr($f, -4);
-  if($f != "." and $f != ".." and $ext == ".stl") {
-   $data = "<div class=\"stl\">";
-   $data .= "<canvas class=\"3dviewer\" sourcefiles=\"$f\" width=\"250\" height=\"250\"></canvas>";
-   $data .= "<div class=\"titre\">";
-   $data .= "<a href=\"$f\">$f</a> ";
-   $data .= human(filesize($f));
-   $data .= "</div>";
-   $data .= "</div> ";
-  }
-  echo $data;
+ $nbstl = count($files);
+ $nbpag = ceil($nbstl / $nbaff);
+
+ if($page >= $nbpag)
+  $page = $nbpag - 1;
+
+ $data = "<h1>";
+ for($i = 0; $i < $nbpag; $i++)
+  $data .= "<a href=\"?page=$i\">$i</a> ";
+ $data .= "</h1>";
+
+ $files = array_slice($files, $page * $nbaff, $nbaff);
+
+ foreach($files as $f) {
+  $data .= "<div class=\"stl\">";
+  $data .= "<canvas class=\"3dviewer\" sourcefiles=\"$f\" width=\"300\" height=\"300\"></canvas>";
+  $data .= "<h3>";
+  $data .= "<a href=\"$f\">$f</a> ";
+  $data .= human(filesize($f));
+  $data .= "</h3>";
+  $data .= "</div>";
  }
- closedir($dir);
+
+ echo $data;
 ?>
 
   <script type="text/javascript">
