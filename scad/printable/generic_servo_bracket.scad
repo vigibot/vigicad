@@ -67,18 +67,18 @@ module servoInServoBracket () {
     
     //Space for wires
     translate ( [SERVO_BOX_X /2 - 4, -SERVO_BOX_X /2, 0 ])
-        cube([8, 6, SERVO_BOX_Z], center = true);
+        cube([8, 5, SERVO_BOX_Z], center = true);
     
     //Space for wires
     translate ( [SERVO_BOX_X /2 - 4, +SERVO_BOX_X /2, 0 ])
-        cube([8, 6, SERVO_BOX_Z], center = true);
+        cube([8, 5, SERVO_BOX_Z], center = true);
     
-     translate ( [13, 12.5, 0])
+     translate ( [13, 12, 0])
         rotate( [0,90,0] )
             cube([9, 4, 5], center = true);
      
          
-     translate ( [13, -12.5, 0])
+     translate ( [13, -12, 0])
         rotate( [0,90,0] )
             cube([9, 4, 5], center = true);
     

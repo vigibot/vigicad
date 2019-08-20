@@ -77,7 +77,7 @@ module servoInHeadBracket () {
     
     //Space for wires
         translate ([SERVO_BOX_X /2 - 4, -SERVO_BOX_X /2, 0])
-        cube([8, 6, SERVO_BOX_Z], center = true);
+        cube([8, 5, SERVO_BOX_Z], center = true);
     
 }
 
