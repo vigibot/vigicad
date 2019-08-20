@@ -31,6 +31,10 @@ SERVO_HEAD_HEIGHT = 5;
 WIRE_PASS_X = 8;
 WIRE_PASS_Y = 2.5;
 
+BACK_WIRE_PASS_X = 5;
+BACK_WIRE_PASS_Y = 4;
+BACK_WIRE_PASS_Z = 9;
+
 HORN_D=7.10;   // Horn placeholder large axis diameter
 HORN_d=4.2;    // Horn placeholder small axis diameter
 HORN_L=14.00;  // Inter axis distance
@@ -75,7 +79,7 @@ module servoHorn( r=0 ) {
     }
 }
 
-module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
+module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0 ) {
 
     translate( [-SERVO_BOX_X,0,0] )
     translate( [-SERVO_HEAD_HEIGHT-HORN_T/2-HORN_AXIS_T,-servoAxisPosY(),0] )
@@ -101,8 +105,16 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
                 translate ([
                     SERVO_BOX_X-WIRE_PASS_X/2,
                     -(SERVO_BOX_X+WIRE_PASS_Y)/2,
-                    0])
-                    cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                    0]) {
+                        cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                        if ( backWireHole ) {
+                            translate ([
+                                WIRE_PASS_X/2+BACK_WIRE_PASS_X/2,
+                                -WIRE_PASS_Y/2+BACK_WIRE_PASS_Y/2,
+                                0])
+                                cube([BACK_WIRE_PASS_X, BACK_WIRE_PASS_Y, BACK_WIRE_PASS_Z], center = true);
+                        }
+                }
             }
 
             // Required Horn
@@ -152,7 +164,7 @@ module servoCounterAxisHole ( ls=20, lp=0, lh=2 ) {
 DEMO_BODY_ROTATION=50;
 difference () {
     color( "gold" )
-        servo( 20, 3, DEMO_BODY_ROTATION );
+        servo( 20, 3, DEMO_BODY_ROTATION, backWireHole=true );
 
     servoScrewHoles( bodyRotation=DEMO_BODY_ROTATION );
     servoCounterAxisHole(5,5);
