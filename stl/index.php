@@ -18,17 +18,24 @@
  <body>
 
 <?php
+ function human($bytes, $decimals = 2) {
+  $sz = array("o", "Ko", "Mo", "Go", "To", "Po");
+  $factor = floor((strlen($bytes) - 1) / 3);
+  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor))."&nbsp;".$sz[$factor];
+ }
+
  $dir = opendir(".");
 
  while(($f = readdir($dir)) !== false) {
   $ext = substr($f, -4);
   if($f != "." and $f != ".." and $ext == ".stl") {
    $data = "<div class=\"stl\">";
-   $data .= "<canvas class=\"3dviewer\" sourcefiles=\"$f\" width=\"200\" height=\"200\"></canvas>";
+   $data .= "<canvas class=\"3dviewer\" sourcefiles=\"$f\" width=\"250\" height=\"250\"></canvas>";
    $data .= "<div class=\"titre\">";
-   $data .= "<a href=\"$f\">$f</a>";
+   $data .= "<a href=\"$f\">$f</a> ";
+   $data .= human(filesize($f));
    $data .= "</div>";
-   $data .= "</div>";
+   $data .= "</div> ";
   }
   echo $data;
  }
