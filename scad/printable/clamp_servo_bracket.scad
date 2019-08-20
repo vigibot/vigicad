@@ -224,18 +224,26 @@ module makeBoxes() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-clampHolder($fn=100);
+difference() {
+    clampHolder($fn=100);
+    if ( 0 ) {
+        %import( "../../stl/clamp_servo_bracket.stl" );
+    }
+}
 
 if ( 0 ) {
     %clampHolderHoles($fn=100);
     %handleServoTransform()
-        servoContainerTransform()
-        servoScrewHoles();
-    %handleServoTransform()
-        servoContainerTransform()
-        mirrorX()
-        servoCounterAxisHole();
-        
+        servoContainerTransform() {
+            servo(30);
+            servoScrewHoles();
+            mirrorX()
+            servoCounterAxisHole();
+        }
+    %clampServoTransform()
+        servoContainerTransform() {
+            servo(135);
+        }
     %import( "../../stl/clamp_servo_bracket.stl" );
 }
 
