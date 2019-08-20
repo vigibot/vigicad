@@ -19,12 +19,9 @@ use <extensions.scad>
 //                  API
 // ----------------------------------------
 module servoContainer( symetry=false, counterAxis=false, backWire=false ) {
-    posx = (servoBoxSizeX() + servoContainerX() ) /2;
-    posy = servoContainerY()/2;
-    posz = servoBoxSizeZ()/2;
     difference() {
         servoContainerShape();
-        translate( [posx,posy,posz] ){
+        servoContainerTransform() {
             mirrorX( symetry ) {
                 servo(backWireHole=backWire);
                 if ( counterAxis ) {
@@ -46,6 +43,15 @@ function servoContainerZ() = servoBoxSizeZ();
 BOX_X   = 30;
 BOX_Y   = 33;
 
+// Move an object to servo position inside container
+module servoContainerTransform() {
+    posx = (servoBoxSizeX() + servoContainerX() ) /2;
+    posy = servoContainerY()/2;
+    posz = servoBoxSizeZ()/2;
+    translate( [posx,posy,posz] )
+        children();
+}
+
 module servoContainerShape() {
     cube([
         servoContainerX(),
@@ -57,7 +63,7 @@ module servoContainerShape() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-if ( false ) {
+if ( 0 ) {
     for ( symetry=[0:1] )
     for ( counterAxis=[0:1] )
     for ( backWire=[0:1] )

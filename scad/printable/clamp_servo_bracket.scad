@@ -11,138 +11,166 @@
  * Author:      Gilles Bouissac
  */
 
-PRECISION=100;
+use <../lib/servo_sg90.scad>
+use <../lib/servo_sg90_container.scad>
+use <../lib/extensions.scad>
+use <../lib/bevel.scad>
+use <../lib/hardware_shop.scad>
 
-$fn = PRECISION;
+// ----------------------------------------
+//                  API
+// ----------------------------------------
 
-MAIN_X = 33;
-MAIN_Y = 33;
-MAIN_Z = 25;
-
-GEAR_BOX_X = 23;
-GEAR_BOX_Y = 10.5;
-GEAR_BOX_Z = 16.5;
-
-
-module drillThread ( t=5 ) {
-    cylinder ( r=0.9, h=t, center=true );
+module clampHolder() {
+    difference() {
+        makeBoxes();
+        mainBoxExtrude ();
+        clampHolderHoles();
+    }
 }
 
-module drillHead ( h=5 ) {
-    cylinder ( r=1.1, h=h, center=true );
+// ----------------------------------------
+//             Implementation
+// ----------------------------------------
+
+MAIN_SX      = servoContainerY();
+MAIN_SY      = servoContainerY();
+MAIN_T       = 5;   // T = Wall Thickness
+MAIN_B       = 4.5; // B = Bevel
+
+GEARBOX_SX   = 23;
+GEARBOX_SY   = 10.5;
+GEARBOX_SZ   = 16.5;
+GEARBOX_T    = 2.5; // T = Wall Thickness
+GEARBOX_BO   = 3;   // Outer Bevel
+GEARBOX_BI   = 1.5; // Inner Bevel
+
+// Centering of clamp servo container to get a square shape
+CENTERING    = (servoContainerY()-servoContainerX())/2;
+
+// ----------------------------------------
+//        Implementation: main box
+// ----------------------------------------
+
+// Move the handle servo Container to its position
+module handleServoTransform() {
+    translate ( [ CENTERING, 0, servoContainerZ() ] )
+        children();
 }
 
-module drillScrew ( h=5, t=10 ) {
-    drillHead ( h=h );
-    drillThread ( t=t );
+// Move the clamp servo Container to its position
+module clampServoTransform() {
+    translate ( [
+        servoContainerY(),
+        servoContainerY()-CENTERING,
+        servoContainerZ() ] )
+        rotate ( [0,0,-90] )
+        rotate ( [180,0,0] )
+    children();
 }
 
-module mainBoxHoles () {
-// Full-Traversal on Y
-    // Left cut
-    translate ( [ -0.5, MAIN_Y/2-(MAIN_Y+10)/2, MAIN_Z-12.5])
-        cube( [2.0, MAIN_Y+10, 13] );
-    // Right cut
-    translate ( [ MAIN_X-1.5, MAIN_Y/2-(MAIN_Y+10)/2, MAIN_Z-12.5])
-        cube( [2.0, MAIN_Y+10, 13] );
-    // Middle cut
-    translate ( [ 9.2, MAIN_Y/2-(MAIN_Y+10)/2, MAIN_Z-12.5])
-        cube( [2.8, MAIN_Y+10, 13] );
+// Parts to remove from main box
+module mainBoxExtrude () {
 
-// Full-Traversal on Z
-    // Middle cut
-    translate ( [ 5, 5, MAIN_Z/2-(MAIN_Z+10)/2])
-        cube( [23, 23, MAIN_Z+10] );
-
-// Full-Traversal on X
-    // Middle cut (clamp servo handles)
-    translate ( [ MAIN_X/2-(MAIN_X+10)/2, MAIN_Y-12, -0.5 ])
-        cube( [MAIN_X+10, 2.8, 13] );
-    // Bevel
-    translate ( [ -5, 0, 0 ])
+// Bevel
+    translate ( [ 0, 0, MAIN_SX ])
     rotate( [0,90,0] )
-    linear_extrude ( height=MAIN_X+10 )
-        polygon ( [
-            [0,0], [0,4.5], [-4.5,0]
-        ]);
+    bevelCutLinear( MAIN_SX, 2*MAIN_SX, $bevel=MAIN_B );
 
-// Semi-Traversal on Y
-    // Servo horn hole
-    translate ( [ MAIN_X-5, MAIN_Y/2, 0 ])
+// Cut clamp servo hole for printability
+    servoHoleB = 4.25;
+    translate ( [ MAIN_SX-5, MAIN_SY-MAIN_T, 0 ])
     rotate( [-90,0,0] )
-    linear_extrude ( height=MAIN_Y )
+    linear_extrude ( height=MAIN_T )
         polygon ( [
-            [0,0], [-14.75,0], [-14.75,-8.25],
-            [-10.5,-12.5], [0,-12.5]
+            [0,0],
+            [-servoHeadSizeY(),0],
+            [-servoHeadSizeY(),-(servoHeadSizeZ()-servoHoleB)],
+            [-(servoHeadSizeY()-servoHoleB),-servoHeadSizeZ()],
+            [0,-servoHeadSizeZ()]
         ]);
 
-    // Little triangle at the top of servo
-    translate ( [ MAIN_X-9, 2.5, 3.5])
-    rotate( [-90,0,0] )
-    linear_extrude ( height=10 )
-        polygon ( [
-            [0,0], [0,-4], [-4,-4]
-        ]);
-
-    // Little triangle at the bottom of servo
-    translate ( [ MAIN_X-15.5, MAIN_Y-2.5-2.5, 12.5])
+// Cut handle container above bottom servo for printability
+    translate ( [ MAIN_SX-15.5, MAIN_SY-2.5-2.5, 12.5])
     rotate( [-90,0,0] )
     linear_extrude ( height=2.5 )
         polygon ( [
             [0,0], [2.5,0], [2.5,-2.5]
         ]);
 
-// Semi-Traversal on Z
-    // Left cut
-    translate ( [ 0, 5, 12.5])
-        cube( [10, 23, 13] );
-    // Right cut
-    translate ( [ MAIN_X-5-8, 2.5, 7.5])
-        cube( [8, 28, MAIN_Z] );
-
-// Semi-Traversal on X
-    // Right hollow
-    translate ( [ MAIN_X-7.5, 5, 0])
-        cube( [5, 8, 12.5] );
-
-    // Right cut
-    translate ( [ MAIN_X-9, 2.5, 3.5])
-        cube( [10, 5, 9] );
-
+// Wire output
+    translate ( [ MAIN_SX-9, 2.5, 3.5])
+    rotate( [-90,0,0] )
+    linear_extrude ( height=5 )
+        polygon ( [
+            [0,0],
+            [-4,-4],
+            [-4,-9],
+            [10,-9],
+            [10,0],
+            [0,0]
+        ]);
 }
 
+// 2 stacked servo containers plus some completion on clamp servo
 module mainBox() {
-    difference () {
-        // main cube
-        cube( [MAIN_X, MAIN_Y, MAIN_Z] );
-        mainBoxHoles ();
+    // Handle servo container
+    handleServoTransform()
+        servoContainer( symetry=true, counterAxis=true );
+
+    // Clamp servo container
+    clampServoTransform() {
+        servoContainer();
+
+        complT = 5;
+        // Complete clamp servo top for better look
+        translate([-CENTERING,0,0])
+            cube( [complT, servoContainerY(), servoContainerZ()] );
+        // Complete clamp servo top for better look
+        translate ( [ servoContainerY()-complT-CENTERING, 0, 0 ] )
+            cube( [complT, servoContainerY(), servoContainerZ()] );
     }
 }
 
-module gearBoxHoles () {
+// ----------------------------------------
+//        Implementation: gear box
+// ----------------------------------------
 
-// Full-Traversal on X
-
-    // Middle cut
-    translate ( [ GEAR_BOX_X/2-(GEAR_BOX_X+10)/2, 0, 0 ])
-    rotate( [0,90,0] )
-    linear_extrude ( height=GEAR_BOX_X+10 )
-        polygon ( [
-            // -0.001 to avoid manifold problems
-            [0,0], [0,8], [-12.5,8], [-14,6.5], [-14,1.5], [-12.5-0.001,0]
-        ]);
-
-    // Bevel
-    translate ( [ GEAR_BOX_X/2-(GEAR_BOX_X+10)/2, GEAR_BOX_Y, GEAR_BOX_Z-3 ])
-    rotate( [0,90,0] )
-    linear_extrude ( height=GEAR_BOX_X+10 )
-        polygon ( [
-            [0,0], [-3,0], [-3,-3]
-        ]);
-
-
+// Move the gear box to its position
+module gearBoxTransform() {
+    translate ( [ (MAIN_SX-GEARBOX_SX)/2, MAIN_SY, 0])
+        children();
 }
 
+// Parts to remove from gear box
+module gearBoxExtrude () {
+
+// Middle cut
+    x2 = GEARBOX_SZ-GEARBOX_T;
+    x1 = x2-GEARBOX_BI;
+    y3 = GEARBOX_SY-GEARBOX_T;
+    y2 = y3-GEARBOX_BI;
+    y1 = GEARBOX_BI;
+    translate ( [ GEARBOX_SX/2-GEARBOX_SX/2, 0, 0 ])
+    rotate( [0,90,0] )
+    linear_extrude ( height=GEARBOX_SX )
+        polygon ( [
+            [0,0],
+            [0,y3],
+            [-x1,y3],
+            [-x2,y2],
+            [-x2,y1],
+            [-x1-mfg(),0] // This mfg is manatory Pascal remember
+        ]);
+
+// Bevel
+    translate ( [ GEARBOX_SX, GEARBOX_SY, 0 ])
+    rotate( [0,0,180] )
+    rotate( [0,90,0] )
+    bevelCutLinear( GEARBOX_SX, 2*GEARBOX_SZ, $bevel=GEARBOX_BO );
+}
+
+// One gear stand in gear box
 module clampStand () {
     rotate( [90,0,0] )
     rotate_extrude()
@@ -151,81 +179,64 @@ module clampStand () {
     ]);
 }
 
+// The box that hold the gears from clamps
 module gearBox() {
-    translate ( [ (MAIN_X-GEAR_BOX_X)/2, MAIN_Y, 0]) {
+     gearBoxTransform() {
         difference () {
             // main cube
-            cube( [GEAR_BOX_X, GEAR_BOX_Y, GEAR_BOX_Z] );
-            gearBoxHoles ();
+            cube( [GEARBOX_SX, GEARBOX_SY, GEARBOX_SZ] );
+            gearBoxExtrude ();
         }
-        translate ( [ 6.1, GEAR_BOX_Y-2.5, 6.25])
-            clampStand();
-        translate ( [ GEAR_BOX_X-6.1, GEAR_BOX_Y-2.5, 6.25])
+        translate ( [ GEARBOX_SX/2, GEARBOX_SY-GEARBOX_T, servoContainerZ()/2])
+            mirrorY()
+            translate ( [ -servoAxisPosY(), 0, 0])
             clampStand();
     }
 }
 
+// ----------------------------------------
+//        Implementation: assembly
+// ----------------------------------------
+
+// Screw holes not already made by libraries
+module clampHolderHoles() {
+
+// Clamp screws for gearBox
+    translate ( [ MAIN_SX/2, servoContainerY(), servoContainerZ()/2])
+        mirrorY()
+        translate ( [ -servoAxisPosY(), 0, 0])
+        rotate( [90,0,0] )
+        screwM2Tight(MAIN_T,GEARBOX_SY);
+
+// Servo handle screws
+    // We need them again to drill added parts from mainBox()
+    clampServoTransform()
+        servoContainerTransform()
+        servoScrewHoles();
+}
+
+// Merges boxes
 module makeBoxes() {
     mainBox();
     gearBox();
 }
 
-module clampHolder() {
-    difference() {
-        makeBoxes();
+// ----------------------------------------
+//                 Showcase
+// ----------------------------------------
+clampHolder($fn=100);
 
-    // Screws on Y
-        // Clamp screws
-        translate ( [ (MAIN_X-GEAR_BOX_X)/2+6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
-            rotate( [90,0,0] )
-                drillScrew ( 10, 40 );
-        }
-        translate ( [ (MAIN_X+GEAR_BOX_X)/2-6.1, MAIN_Y+GEAR_BOX_Y, 6.25]) {
-            rotate( [90,0,0] )
-                drillScrew ( 10, 40 );
-        }
-
-        // Servo handle screws
-        translate ( [ 2.5, MAIN_Y, 6.25]) {
-            rotate( [90,0,0] )
-                drillScrew ( 20, 36 );
-        }
-        translate ( [ MAIN_X-2.5, MAIN_Y, 6.25]) {
-            rotate( [90,0,0] )
-                drillScrew ( 20, 36 );
-        }
-
-    // Screws on X
-        translate ( [ 0, 2.5, MAIN_Z-6.25]) {
-            rotate( [0,90,0] )
-                drillScrew ( 20, 36 );
-        }
-        translate ( [ 0, MAIN_Y-2.5, MAIN_Z-6.25]) {
-            rotate( [0,90,0] )
-                drillScrew ( 20, 36 );
-        }
-
-        translate ( [ MAIN_X, 11.1, MAIN_Z-6.25]) {
-            rotate( [0,90,0] )
-                drillScrew ( 0, 20 );
-        }
-        translate ( [ MAIN_X, MAIN_Y-11.1, MAIN_Z-6.25]) {
-            rotate( [0,90,0] )
-                drillScrew ( 0, 20 );
-        }
-    }
+if ( 0 ) {
+    %clampHolderHoles($fn=100);
+    %handleServoTransform()
+        servoContainerTransform()
+        servoScrewHoles();
+    %handleServoTransform()
+        servoContainerTransform()
+        mirrorX()
+        servoCounterAxisHole();
+        
+    %import( "../../stl/clamp_servo_bracket.stl" );
 }
-
-
-// ------------------------------
-//
-//   Debug section
-//
-// ------------------------------
-clampHolder();
-
-
-//%import( "../../stl/clamp_servo_bracket.stl" );
-
 
 
