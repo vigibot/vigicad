@@ -107,7 +107,7 @@ module uBracketClampServo(bodyRotation=0) {
     uBracketServo(AXIS_POS_Z,bodyRotation=bodyRotation+180);
 }
 
-if ( 1 ) {
+if ( 0 ) {
     %toolPlateExtrude($fn=100);
     translate( [0,0,-1.5] ) {
         %uBracketClampServo($fn=100);
