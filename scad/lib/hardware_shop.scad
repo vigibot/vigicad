@@ -69,9 +69,9 @@ module screwArray( screws ) {
 //   lh: Head length (from z=-lp to z-)
 module screwMx ( ds, dp, dh, lt=10, lp=5, lh=2 ) {
     translate( [0,0,lt/2] )
-        cylinder (r = ds/2, h = lt+0.1, center = true);
+        cylinder (r = ds/2, h = lt, center = true);
     translate( [0,0,-lp/2] )
-        cylinder (r = dp/2, h = lp+0.1, center = true);
+        cylinder (r = dp/2, h = lp, center = true);
     translate( [0,0,-lp-lh/2] )
         cylinder (r = dh/2, h = lh, center = true);
 }

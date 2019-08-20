@@ -114,7 +114,7 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0 ) {
 // Stand holes
 //   h: Can't be changed
 //   H: Passing hole length after screwing hole
-DEFAULT_PASSING_L = 0.1+SERVO_HEAD_HEIGHT+SERVO_BOX_X + servoScrewPosX();
+DEFAULT_PASSING_L = SERVO_HEAD_HEIGHT+SERVO_BOX_X + servoScrewPosX();
 module servoScrewHoles ( H=DEFAULT_PASSING_L, bodyRotation=0 ) {
     offset_x = servoScrewPosX();
     offset_y = servoScrewPosY();
