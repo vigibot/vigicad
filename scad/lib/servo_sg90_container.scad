@@ -17,7 +17,7 @@ use <servo_sg90.scad>
 // ----------------------------------------
 //                  API
 // ----------------------------------------
-module servoContainer( symetry=true, counterAxis=false, backWire=false ) {
+module servoContainer( symetry=false, counterAxis=false, backWire=false ) {
     posx = (servoBoxSizeX() + servoContainerX() ) /2;
     posy = servoContainerY()/2;
     posz = servoBoxSizeZ()/2;
