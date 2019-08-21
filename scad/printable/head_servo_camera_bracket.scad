@@ -106,7 +106,7 @@ difference () {
     rotate([180, 0, 0])
         smilingHead();
 
-    if ( 1 ) {
+    if ( 0 ) {
         import( "../../stl/head_servo_camera_bracket.stl" );
     }
 }
