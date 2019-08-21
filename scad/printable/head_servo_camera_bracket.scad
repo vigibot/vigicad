@@ -11,6 +11,7 @@
  * Author:      Quillès Jonathan
  */
 
+use <../lib/servo_sg90.scad>
 use <../lib/servo_sg90_container.scad>
 
 PRECISION = 100;
@@ -27,10 +28,7 @@ HEAD_CHAMFER = (HEAD_TOP_X - HEAD_BOT_X) / 2;
 SERVO_CENTER_Z = 6.25;
 
 module box() {
-    servoContainer(
-        symetry = SERVO_SYMETRY,
-        counterAxis = SERVO_COUNTER_AXIS,
-        backWire = SERVO_BACK_WIRE);
+    servoContainer( counterAxis=true );
 }
 
 module chamfer() {
@@ -95,6 +93,8 @@ module smile() {
 module smilingHead() {
     difference() {
         head();
+        servoContainerTransform()
+            servoScrewHoles();
         translate([HEAD_BOT_X/2, 28.75, SERVO_CENTER_Z])
            cameraHoles();
         translate([HEAD_BOT_X/2, 15, 12])
@@ -102,8 +102,22 @@ module smilingHead() {
     }
 }
 
-rotate([180, 0, 0])
-    smilingHead();
+difference () {
+    rotate([180, 0, 0])
+        smilingHead();
 
-//%import( "../../stl/head_servo_camera_bracket.stl" );
+    if ( 1 ) {
+        import( "../../stl/head_servo_camera_bracket.stl" );
+    }
+}
+
+if ( 0 ) {
+    rotate([180, 0, 0])
+    %servoContainerTransform() {
+        servo();
+        servoScrewHoles();
+    }
+    %import( "../../stl/head_servo_camera_bracket.stl" );
+}
+
 
