@@ -20,7 +20,7 @@ $fn = PRECISION;
 
 BOX_X = 30; 
 BOX_Y = 33;
-CHAMFERSIZE = 2.2;
+BOTTOM_THICKNESS = 1.2;
 SERVOSYMETRY = 1;
 SERVOCOUNTERAXIS = 1;
 SERVOBACKWIRE = 1;
@@ -31,14 +31,14 @@ module chamfer() {
     rotate( [90,0,90] )
     linear_extrude ( height=BOX_X)
         polygon ( [
-            [0,CHAMFERSIZE], [0, 0], [CHAMFERSIZE,0]
+            [0,BOTTOM_THICKNESS], [0, 0], [BOTTOM_THICKNESS,0]
         ]);
 }
 
 module cover() {
-    translate ( [ 0, 0, -CHAMFERSIZE])
+    translate ( [ 0, 0, -BOTTOM_THICKNESS])
         difference() {
-            cube([BOX_X, BOX_Y, CHAMFERSIZE]);
+            cube([BOX_X, BOX_Y, BOTTOM_THICKNESS]);
             chamfer();
             translate ([BOX_X, BOX_Y, 0])
                 rotate([0, 0, 180])
