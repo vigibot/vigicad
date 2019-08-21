@@ -12,7 +12,7 @@
  */
  
 use <../lib/servo_sg90_container.scad>
-use <../lib/extensions.scad>
+use <../lib/bevel.scad>
 
 PRECISION = 100;
 
@@ -21,35 +21,33 @@ $fn = PRECISION;
 BOX_X = 30; 
 BOX_Y = 33;
 BOTTOM_THICKNESS = 1.2;
-SERVOSYMETRY = 1;
-SERVOCOUNTERAXIS = 1;
-SERVOBACKWIRE = 1;
+SERVO_SYMETRY = 1;
+SERVO_COUNTER_AXIS = 1;
+SERVO_BACK_WIRE = 1;
 
 box ();
-
-module chamfer() {
-    rotate( [90,0,90] )
-    linear_extrude ( height=BOX_X)
-        polygon ( [
-            [0,BOTTOM_THICKNESS], [0, 0], [BOTTOM_THICKNESS,0]
-        ]);
-}
 
 module cover() {
     translate ( [ 0, 0, -BOTTOM_THICKNESS])
         difference() {
-            cube([BOX_X, BOX_Y, BOTTOM_THICKNESS]);
-            chamfer();
-            translate ([BOX_X, BOX_Y, 0])
-                rotate([0, 0, 180])
-                    chamfer();
+            cube([
+                servoContainerX(), 
+                servoContainerY(), 
+                BOTTOM_THICKNESS]);
+            translate ([0, servoContainerY()/2, 0])
+                rotate([90, 0, 90])
+                    bevelCutLinear(
+                        servoContainerX(), 
+                        servoContainerY(), 
+                        $bevel = BOTTOM_THICKNESS);
+
     }
 }
 
 module box () {
     servoContainer(
-        symetry = SERVOSYMETRY,
-        counterAxis = SERVOCOUNTERAXIS,
-        backWire = SERVOBACKWIRE);
+        symetry = SERVO_SYMETRY,
+        counterAxis = SERVO_COUNTER_AXIS,
+        backWire = SERVO_BACK_WIRE);
     cover();
 }
