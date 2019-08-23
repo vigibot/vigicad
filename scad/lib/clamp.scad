@@ -360,6 +360,12 @@ translate( [150,90,0] ) {
         servoFinger(arm_l=40,arm_a=30,arm_i=30,elbow_r=20,elbow_a=110,$fn=100);
 }
 
+translate( [280,90,0] ) {
+    color("DarkViolet")
+        mirrorY()
+        servoFinger(arm_l=40,arm_a=0,arm_i=60,elbow_r=35,elbow_a=80,$fn=100);
+}
+
 translate( [150,0,0] ) {
     color("MediumOrchid")
         mirrorY()
@@ -375,5 +381,5 @@ translate( [150,-70,0] ) {
 translate( [150,-120,0] ) {
     color("Plum")
         mirrorY()
-        servoFinger(arm_l=20,arm_a=45,arm_i=10,elbow_r=8,elbow_a=170,$fn=100);
+        servoFinger(arm_l=20,arm_a=45,arm_i=11,elbow_r=8,elbow_a=170,$fn=100);
 }
