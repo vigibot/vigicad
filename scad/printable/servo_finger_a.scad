@@ -18,13 +18,20 @@ use <../lib/clamp.scad>
 // ----------------------------------------
 
 module servoFingerA(ratio=1) {
-    translate( [-getClampPitchDiameter()/2,0,0] )
+    mirror( [1,0,0] )
         servoFinger(ratio*getClampArmBaseLength(), ratio*getClampArmBaseRadius());
 }
 
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-servoFingerA( $fn=100 );
+difference() {
+    servoFingerA( $fn=100 );
+    if (0) {
+        import( "../../stl/servo_finger_a.stl" );
+    }
+}
 
-//%import( "../../stl/servo_finger_a.stl" );
+if (0) {
+    %import( "../../stl/servo_finger_a.stl" );
+}

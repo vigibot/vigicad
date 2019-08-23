@@ -12,46 +12,49 @@
  */
 
 use <../../../PressureAngleGear/StraightGearLib.scad>
-
+use <extensions.scad>
 
 // ----------------------------------------
 //                  API
 // ----------------------------------------
 
-module servoFinger(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
-    rotate( [0,0,-ARM_I] )
+module servoFinger(arm_l=ARM_L,elbow_r=ARM_R,arm_a=ARM_A,arm_i=ARM_I,elbow_a=ELBOW_A) {
+    data = armData ( arm_l, arm_a, arm_i, elbow_r, elbow_a, with_stand=true );
+    translate( [arm_i/2,0,0] )
+    rotate( [0,0,-arm_a] )
     difference() {
         union() {
             wedgeC();
-            mirror( [1,0,0] )
-                arm( arm_l, arm_r, with_stand=true );
+            arm(data);
         }
         cylinder(r=PINCE_B_HOLE/2,h=30,center=true);
         servoHornHole();
     }
 }
 
-module clampFingerAImpl(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
-    rotate( [0,0,-ARM_I] )
+module clampFingerAImpl(arm_l=ARM_L,elbow_r=ARM_R) {
+    data = armData ( arm_l, ARM_A, ARM_I, elbow_r, ELBOW_A, with_stand=true );
+    rotate( [0,0,+ARM_A] )
     difference() {
         union() {
             gearA();
             wedgeA();
             mirror( [1,0,0] )
-                arm( arm_l, arm_r, with_stand=true );
+                arm(data);
         }
         cylinder(r=PINCE_A_HOLE/2,h=30,center=true);
         servoHornHole();
     }
 }
 
-module clampFingerBImpl(arm_l=getClampArmBaseLength(),arm_r=getClampArmBaseRadius()) {
-    rotate( [0,0,ARM_I] )
+module clampFingerBImpl(arm_l=ARM_L,elbow_r=ARM_R) {
+    data = armData ( arm_l, ARM_A, ARM_I, elbow_r, ELBOW_A, with_stand=false );
+    rotate( [0,0,-ARM_A] )
     difference() {
         union() {
             gearB();
             wedgeB();
-            arm( arm_l, arm_r, with_stand=false );
+            arm(data);
         }
         cylinder(r=PINCE_B_HOLE/2,h=30,center=true);
     }
@@ -83,7 +86,12 @@ ARM_T=5;     // Thickness: epaisseur du bras
 ARM_B=0.5;   // Bevel: Chamfrein du bras
 ARM_L=17.0;  // Longueur de la partie droite du bras
 ARM_R=12.5;  // Rayon interieur de l'arrondi du bras
-ARM_I=-25.3; // Inclinaison: rotation de tout le bras sur son axe
+ARM_A=25.3;  // Inclinaison angle: rotation de tout le bras sur son axe
+ELBOW_A=110; // Elbow arc default angle
+
+// Special for no gear version
+ARM_I=PITCHDIAMETER;  // Default clamp Inter-axis
+
 
 // Palonnier de la servo
 // HORN_D=5.75;     // Grand diametre palonnier
@@ -206,16 +214,16 @@ module wedgeC() {
     ]);
 }
 
-module cutFingers() {
-    translate( [-PITCHDIAMETER/2,0,0] )
-    translate( [0,25,0] )
+module fingerEndBevel(data) {
+    rotate( [0,0,data[I_ARM_A]] )
+    translate( [-data[I_ARM_I]/2,0,0] )
     rotate([-90,0,0])
-    linear_extrude(height=100)
+    linear_extrude(height=(data[I_FOREARM_EG].y+data[I_FOREARM_H])*2)
     polygon( points=[
-        [ARM_B,0],
-        [-100,0],
-        [-100,-ARM_T],
-        [ARM_B,-ARM_T],
+        [2*ARM_B,ARM_B],
+        [-100,ARM_B],
+        [-100,-ARM_T-ARM_B],
+        [2*ARM_B,-ARM_T-ARM_B],
         [0,-ARM_T+ARM_B],
         [0,-ARM_B]
     ]);
@@ -253,26 +261,64 @@ module armStandShape() {
     }
 }
 
-module armShape( arm_l, arm_r, with_stand=false ) {
+// Indexes in data returned by armData
+I_ARM_L      =  0; // Arm length
+I_ARM_A      =  1; // Arm inclinaison angle
+I_ARM_I      =  2; // Arms interaxis
+I_ELBOW_R    =  3; // Elbow radius
+I_ELBOW_A    =  4; // Elbow angle
+I_STAND      =  5; // With or without stand (bool)
+I_FOREARM_SL =  6; // Forearm starting point middle [x,y] in local coordinated
+I_FOREARM_EG =  7; // Forearm end point bot [x,y] in glocal coordinated
+I_FOREARM_L  =  8; // Forearm length of middle line
+I_FOREARM_H  =  9; // Forearm height of section at X=0
+function armData ( arm_l, arm_a, arm_i, elbow_r, elbow_a, with_stand ) = let (
+    fore_top_x  = -elbow_r+(elbow_r+ARM_W)*cos(elbow_a)-ARM_W/2,
+    fore_top_y  = +arm_l+(elbow_r+ARM_W)*sin(elbow_a),
+    fore_bot_x  = -elbow_r+(elbow_r)*cos(elbow_a)-ARM_W/2,
+    fore_bot_y  = +arm_l+(elbow_r)*sin(elbow_a),
+    fore_mid_x  = (fore_top_x+fore_bot_x)/2,
+    fore_mid_y  = (fore_top_y+fore_bot_y)/2,
+    angle       = arm_a+(90-elbow_a),
+    coeff_top   = fore_top_x*cos(-arm_a) -fore_top_y*sin(-arm_a) +arm_i/2,
+    fore_top_l  = coeff_top/cos(-angle),
+    coeff_bot   = fore_bot_x*cos(-arm_a) -fore_bot_y*sin(-arm_a) +arm_i/2,
+    fore_bot_l  = coeff_bot/cos(-angle),
+    fore_l      = max(fore_top_l,fore_bot_l),
+    fore_bot_elx = fore_bot_x - fore_bot_l*cos(90-elbow_a),
+    fore_bot_ely = fore_bot_y + fore_bot_l*sin(90-elbow_a),
+    fore_bot_egx = fore_bot_elx*cos(-arm_a)-fore_bot_ely*sin(-arm_a)+arm_i/2,
+    fore_bot_egy = fore_bot_elx*sin(-arm_a)+fore_bot_ely*cos(-arm_a),
+    fore_h      = ARM_W/cos(angle)
+) [arm_l,arm_a,arm_i,elbow_r,elbow_a,with_stand,
+[fore_mid_x,fore_mid_y],[fore_bot_egx,fore_bot_egy],fore_l,fore_h];
+
+module armShape(data) {
     rotate([-90,0,0])
-    translate( [-ARM_W/2,-ARM_T,0] ) {
-        if ( with_stand )
-            armStandShape();
-        linear_extrude(height=arm_l)
+        translate( [-ARM_W/2,-ARM_T,0] )
+        union() {
+            if ( data[I_STAND] )
+                armStandShape();
+            linear_extrude(height=data[I_ARM_L])
+                armSection();
+        }
+    translate( [-data[I_ELBOW_R]-ARM_W/2,data[I_ARM_L],0] )
+        rotate_extrude(angle=data[I_ELBOW_A])
+        translate( [data[I_ELBOW_R],0,0] )
+        armSection();
+    translate( [data[I_FOREARM_SL].x,data[I_FOREARM_SL].y,0] )
+        rotate([0,0,data[I_ELBOW_A]])
+        rotate([-90,0,0])
+        translate( [-ARM_W/2,-ARM_T,0] ) {
+        linear_extrude(height=data[I_FOREARM_L])
             armSection();
     }
-    translate( [-arm_r-ARM_W/2,arm_l,0] )
-    rotate_extrude(angle=110)
-        translate( [arm_r,0,0] )
-        armSection();
 }
 
-module arm( arm_l, arm_r, with_stand=false ) {
-    rotate( [0,0,-ARM_I] )
+module arm(data) {
     difference() {
-        rotate( [0,0,+ARM_I] )
-            armShape( arm_l, arm_r, with_stand );
-        cutFingers();
+        armShape(data);
+        fingerEndBevel(data);
     }
 }
 
@@ -291,16 +337,43 @@ module servoHornHole() {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-color("DeepSkyBlue")
-    translate( [-getClampPitchDiameter()/2,0,0] )
-    clampFingerAImpl( arm_l=2*getClampArmBaseLength(), $fn=100 );
-color("Cyan")
-    translate( [+getClampPitchDiameter()/2,0,0] )
-    clampFingerBImpl( arm_r=2*getClampArmBaseRadius(), $fn=100 );
-color("green")
-    translate( [50,0,0] )
-    servoFinger($fn=100);
-color("lime")
-    translate( [50+getClampPitchDiameter(),0,0] )
-    mirror( [1,0,0] )
-    servoFinger($fn=100);
+translate( [0,0,0] ) {
+    color("DeepSkyBlue")
+        translate( [-getClampPitchDiameter()/2,0,0] )
+        clampFingerAImpl( arm_l=2*getClampArmBaseLength(),elbow_r=22, $fn=100 );
+    color("Cyan")
+        translate( [+getClampPitchDiameter()/2,0,0] )
+        clampFingerBImpl( elbow_r=2*getClampArmBaseRadius(), $fn=100 );
+}
+
+translate( [50,0,0] ) {
+    color("green")
+        servoFinger($fn=100);
+    color("lime")
+        mirror( [1,0,0] )
+        servoFinger($fn=100);
+}
+
+translate( [150,90,0] ) {
+    color("DarkViolet")
+        mirrorY()
+        servoFinger(arm_l=40,arm_a=30,arm_i=30,elbow_r=20,elbow_a=110,$fn=100);
+}
+
+translate( [150,0,0] ) {
+    color("MediumOrchid")
+        mirrorY()
+        servoFinger(arm_l=40,arm_a=0,arm_i=100,elbow_r=20,elbow_a=90,$fn=100);
+}
+
+translate( [150,-70,0] ) {
+    color("DarkViolet")
+        mirrorY()
+        servoFinger(arm_l=40,arm_a=-30,arm_i=100,elbow_r=20,elbow_a=90,$fn=100);
+}
+
+translate( [150,-120,0] ) {
+    color("Plum")
+        mirrorY()
+        servoFinger(arm_l=20,arm_a=45,arm_i=10,elbow_r=8,elbow_a=170,$fn=100);
+}

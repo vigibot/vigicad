@@ -25,6 +25,13 @@ module clampFingerA(ratio=1) {
 // ----------------------------------------
 //                 Showcase
 // ----------------------------------------
-clampFingerA( $fn=100 );
+difference() {
+    clampFingerA( $fn=100 );
+    if (0) {
+        import( "../../stl/clamp_finger_a.stl" );
+    }
+}
 
-//%import( "../../stl/clamp_finger_a.stl" );
+if (0) {
+    %import( "../../stl/clamp_finger_a.stl" );
+}
