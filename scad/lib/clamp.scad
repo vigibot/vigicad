@@ -18,7 +18,7 @@ use <extensions.scad>
 //                  API
 // ----------------------------------------
 
-module servoFinger(arm_l=ARM_L,elbow_r=ARM_R,arm_a=ARM_A,arm_i=ARM_I,elbow_a=ELBOW_A) {
+module servoFinger(arm_l=ARM_L,arm_a=ARM_A,arm_i=ARM_I,elbow_r=ARM_R,elbow_a=ELBOW_A) {
     data = armData ( arm_l, arm_a, arm_i, elbow_r, elbow_a, with_stand=true );
     translate( [arm_i/2,0,0] )
     rotate( [0,0,-arm_a] )
@@ -32,8 +32,8 @@ module servoFinger(arm_l=ARM_L,elbow_r=ARM_R,arm_a=ARM_A,arm_i=ARM_I,elbow_a=ELB
     }
 }
 
-module clampFingerAImpl(arm_l=ARM_L,elbow_r=ARM_R) {
-    data = armData ( arm_l, ARM_A, ARM_I, elbow_r, ELBOW_A, with_stand=true );
+module clampFingerAImpl(arm_l=ARM_L,arm_a=ARM_A,arm_i=ARM_I,elbow_r=ARM_R,elbow_a=ELBOW_A) {
+    data = armData ( arm_l, arm_a, arm_i, elbow_r, elbow_a, with_stand=true );
     rotate( [0,0,+ARM_A] )
     difference() {
         union() {
@@ -47,8 +47,8 @@ module clampFingerAImpl(arm_l=ARM_L,elbow_r=ARM_R) {
     }
 }
 
-module clampFingerBImpl(arm_l=ARM_L,elbow_r=ARM_R) {
-    data = armData ( arm_l, ARM_A, ARM_I, elbow_r, ELBOW_A, with_stand=false );
+module clampFingerBImpl(arm_l=ARM_L,arm_a=ARM_A,arm_i=ARM_I,elbow_r=ARM_R,elbow_a=ELBOW_A) {
+    data = armData ( arm_l, arm_a, arm_i, elbow_r, elbow_a, with_stand=false );
     rotate( [0,0,-ARM_A] )
     difference() {
         union() {

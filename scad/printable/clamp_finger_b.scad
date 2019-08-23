@@ -19,7 +19,7 @@ use <../lib/clamp.scad>
 
 module clampFingerB(ratio=1) {
     translate( [+getClampPitchDiameter()/2,0,0] )
-        clampFingerBImpl(ratio*getClampArmBaseLength(), ratio*getClampArmBaseRadius());
+        clampFingerBImpl(arm_l=ratio*getClampArmBaseLength(), elbow_r=ratio*getClampArmBaseRadius());
 }
 
 // ----------------------------------------

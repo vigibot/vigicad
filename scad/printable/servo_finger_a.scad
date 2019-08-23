@@ -19,7 +19,7 @@ use <../lib/clamp.scad>
 
 module servoFingerA(ratio=1) {
     mirror( [1,0,0] )
-        servoFinger(ratio*getClampArmBaseLength(), ratio*getClampArmBaseRadius());
+        servoFinger(arm_l=ratio*getClampArmBaseLength(), elbow_r=ratio*getClampArmBaseRadius());
 }
 
 // ----------------------------------------
