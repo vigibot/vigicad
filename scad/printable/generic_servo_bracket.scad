@@ -14,18 +14,10 @@
 use <../lib/servo_sg90_container.scad>
 use <../lib/bevel.scad>
 
-PRECISION = 100;
-
-$fn = PRECISION;
-
-BOX_X = 30; 
-BOX_Y = 33;
-BOTTOM_THICKNESS = 1.2;
-SERVO_SYMETRY = 1;
+BOTTOM_THICKNESS   = 1.2;
+SERVO_SYMETRY      = 1;
 SERVO_COUNTER_AXIS = 1;
-SERVO_BACK_WIRE = 1;
-
-box ();
+SERVO_BACK_WIRE    = 1;
 
 module cover() {
     translate ( [ 0, 0, -BOTTOM_THICKNESS])
@@ -44,10 +36,13 @@ module cover() {
     }
 }
 
-module box () {
+module genericServoBracket () {
     servoContainer(
         symetry = SERVO_SYMETRY,
         counterAxis = SERVO_COUNTER_AXIS,
         backWire = SERVO_BACK_WIRE);
     cover();
 }
+
+genericServoBracket ($fn=100);
+
