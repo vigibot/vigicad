@@ -107,7 +107,7 @@ difference () {
         smilingHead();
 
     if ( 0 ) {
-        import( "../../stl/head_servo_camera_bracket.stl" );
+        import( "../../stl/head_servo_camera_bracket_smile.stl" );
     }
 }
 
@@ -117,7 +117,7 @@ if ( 0 ) {
         servo();
         servoScrewHoles();
     }
-    %import( "../../stl/head_servo_camera_bracket.stl" );
+    %import( "../../stl/head_servo_camera_bracket_smile.stl" );
 }
 
 
