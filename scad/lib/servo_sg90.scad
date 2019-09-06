@@ -28,13 +28,10 @@ SERVO_STAND_OFFSET = 17.4; // From servo right (x>0) border
 SERVO_HEAD_WIDTH = 14.75;
 SERVO_HEAD_HEIGHT = 5;
 
-WIRE_PASS_X = 8;
-WIRE_PASS_Y = 2.5;
-WIRE_PASS_Z = 5;
-
-BACK_WIRE_PASS_X = 5;
-BACK_WIRE_PASS_Y = 4;
-BACK_WIRE_PASS_Z = 9;
+WIRE_PASS_WIDTH = 8;
+WIRE_PASS_LENGTH = 5;
+WIRE_PASS_THICKNESS = 3.5;
+WIRE_PASS_OFFSET = 1.5;
 
 HORN_D=7.10;   // Horn placeholder large axis diameter
 HORN_d=4.2;    // Horn placeholder small axis diameter
@@ -106,20 +103,16 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0, side
                     cube([SERVO_HEAD_HEIGHT, SERVO_HEAD_WIDTH, SERVO_BOX_Z], center = true);
 
                 // Space for wires
-                translate ([
-                    SERVO_BOX_X-WIRE_PASS_X/2,
-                    -(SERVO_BOX_X+WIRE_PASS_Y)/2,
-                    0]) {
+                translate ([SERVO_BOX_X - WIRE_PASS_WIDTH / 2, -(SERVO_BOX_X + WIRE_PASS_OFFSET) / 2, 0]) {
+
                         if ( sideWireHole )
-                            cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z+WIRE_PASS_Z*2], center = true);
+                            cube([WIRE_PASS_WIDTH, WIRE_PASS_THICKNESS, SERVO_BOX_Z + WIRE_PASS_LENGTH * 2], center = true);
                         else
-                            cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                            cube([WIRE_PASS_WIDTH, WIRE_PASS_THICKNESS, SERVO_BOX_Z], center = true);
+
                         if ( backWireHole ) {
-                            translate ([
-                                WIRE_PASS_X/2+BACK_WIRE_PASS_X/2,
-                                -WIRE_PASS_Y/2+BACK_WIRE_PASS_Y/2,
-                                0])
-                                cube([BACK_WIRE_PASS_X, BACK_WIRE_PASS_Y, BACK_WIRE_PASS_Z], center = true);
+                            translate ([WIRE_PASS_WIDTH / 2 + WIRE_PASS_LENGTH / 2, 0, 0])
+                                cube([WIRE_PASS_LENGTH, WIRE_PASS_THICKNESS, WIRE_PASS_WIDTH], center = true);
                         }
                 }
             }
