@@ -18,12 +18,12 @@ use <extensions.scad>
 // ----------------------------------------
 //                  API
 // ----------------------------------------
-module servoContainer( symetry=false, counterAxis=false, backWire=false ) {
+module servoContainer( symetry=false, counterAxis=false, backWire=false, sideWire=false ) {
     difference() {
         servoContainerShape();
         servoContainerTransform() {
             mirrorX( symetry ) {
-                servo(backWireHole=backWire);
+                servo(backWireHole=backWire, sideWireHole=sideWire);
                 if ( counterAxis ) {
                     servoCounterAxisHole();
                 }
