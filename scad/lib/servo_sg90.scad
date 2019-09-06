@@ -30,6 +30,7 @@ SERVO_HEAD_HEIGHT = 5;
 
 WIRE_PASS_X = 8;
 WIRE_PASS_Y = 2.5;
+WIRE_PASS_Z = 5;
 
 BACK_WIRE_PASS_X = 5;
 BACK_WIRE_PASS_Y = 4;
@@ -82,7 +83,7 @@ module servoHorn( r=0 ) {
     }
 }
 
-module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0 ) {
+module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0, sideWireHole=0 ) {
 
     translate( [-SERVO_BOX_X,0,0] )
     translate( [-SERVO_HEAD_HEIGHT-HORN_T/2-HORN_AXIS_T,-servoAxisPosY(),0] )
@@ -109,7 +110,10 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0 ) {
                     SERVO_BOX_X-WIRE_PASS_X/2,
                     -(SERVO_BOX_X+WIRE_PASS_Y)/2,
                     0]) {
-                        cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
+                        if ( sideWireHole )
+                            cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z+WIRE_PASS_Z*2], center = true);
+                        else
+                            cube([WIRE_PASS_X, WIRE_PASS_Y, SERVO_BOX_Z], center = true);
                         if ( backWireHole ) {
                             translate ([
                                 WIRE_PASS_X/2+BACK_WIRE_PASS_X/2,
@@ -167,7 +171,7 @@ module servoCounterAxisHole ( ls=20, lp=0, lh=2 ) {
 DEMO_BODY_ROTATION=50;
 difference () {
     color( "gold" )
-        servo( 20, 3, DEMO_BODY_ROTATION, backWireHole=true );
+        servo( 20, 3, DEMO_BODY_ROTATION, backWireHole=true, sideWireHole=true );
 
     servoScrewHoles( bodyRotation=DEMO_BODY_ROTATION );
     servoCounterAxisHole(5,5);
