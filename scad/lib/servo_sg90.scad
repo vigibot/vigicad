@@ -29,6 +29,7 @@ SERVO_HEAD_WIDTH = 14.75;
 SERVO_HEAD_HEIGHT = 5;
 
 WIRE_PASS_WIDTH = 8;
+WIRE_PASS_WIDTH_BACK = 9;  // A little more width for PEG-G bridging
 WIRE_PASS_LENGTH = 5;
 WIRE_PASS_THICKNESS = 3.5;
 WIRE_PASS_OFFSET = 1.5;
@@ -112,7 +113,7 @@ module servo ( hornRotation=0, hornNbArm=1, bodyRotation=0, backWireHole=0, side
 
                         if ( backWireHole ) {
                             translate ([WIRE_PASS_WIDTH / 2 + WIRE_PASS_LENGTH / 2, 0, 0])
-                                cube([WIRE_PASS_LENGTH, WIRE_PASS_THICKNESS, WIRE_PASS_WIDTH], center = true);
+                                cube([WIRE_PASS_LENGTH, WIRE_PASS_THICKNESS, WIRE_PASS_WIDTH_BACK], center = true);
                         }
                 }
             }
