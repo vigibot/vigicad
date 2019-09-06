@@ -28,7 +28,7 @@ HEAD_CHAMFER = (HEAD_TOP_X - HEAD_BOT_X) / 2;
 SERVO_CENTER_Z = 6.25;
 
 module box() {
-    servoContainer( counterAxis=true, sideWire=true );
+    servoContainer( counterAxis=true );
 }
 
 module chamfer() {
@@ -60,6 +60,8 @@ module topHead() {
         ]);
         chamfer();
         cube([servoContainerX(), servoContainerY(), servoContainerZ()]);
+        servoContainerTransform()
+            servo ( sideWireHole=true );
     }
 }
 
