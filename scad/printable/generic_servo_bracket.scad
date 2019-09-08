@@ -6,11 +6,12 @@
  *   * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * 
- * Description: OpenSCAD design for the smiling pan & tilt smiling head part of the Vigibot robot "Minus"
+ * Description: OpenSCAD design for the pan & tilt head part of the Vigibot robot "Minus"
  * Design:      Quillès Jonathan / Pascal Piazzalungua
- * Author:      Quillès Jonathan
+ * Author:      Quillès Jonathan / Pascal Piazzalungua
  */
  
+use <../lib/servo_sg90.scad>
 use <../lib/servo_sg90_container.scad>
 use <../lib/bevel.scad>
 
@@ -18,31 +19,44 @@ BOTTOM_THICKNESS   = 1.2;
 SERVO_SYMETRY      = 1;
 SERVO_COUNTER_AXIS = 1;
 SERVO_BACK_WIRE    = 1;
+SERVO_SIDE_WIRE    = 1;
 
 module cover() {
-    translate ( [ 0, 0, -BOTTOM_THICKNESS])
+    translate([0, 0, -BOTTOM_THICKNESS])
         difference() {
-            cube([
-                servoContainerX(), 
-                servoContainerY(), 
-                BOTTOM_THICKNESS]);
-            translate ([0, servoContainerY()/2, 0])
-                rotate([90, 0, 90])
-                    bevelCutLinear(
-                        servoContainerX(), 
-                        servoContainerY(), 
-                        $bevel = BOTTOM_THICKNESS);
+            cube([servoContainerX(), 
+                  servoContainerY(), 
+                  BOTTOM_THICKNESS]);
 
+            translate([0, servoContainerY() / 2, 0])
+                rotate([90, 0, 90])
+                    bevelCutLinear(servoContainerX(), 
+                                   servoContainerY(), 
+                                   $bevel = BOTTOM_THICKNESS);
     }
 }
 
 module genericServoBracket () {
-    servoContainer(
-        symetry = SERVO_SYMETRY,
-        counterAxis = SERVO_COUNTER_AXIS,
-        backWire = SERVO_BACK_WIRE);
-    cover();
+    servoContainer(symetry = SERVO_SYMETRY,
+                   counterAxis = SERVO_COUNTER_AXIS,
+                   backWire = SERVO_BACK_WIRE);
+
+    if(SERVO_SIDE_WIRE)
+        difference() {
+            cover();
+
+            union() {
+                servoContainerTransform()
+                    servo(sideWireHole = true);
+
+                if(SERVO_SYMETRY)
+                    servoContainerTransform()
+                        mirror([0, 1, 0])
+                            servo(sideWireHole = true);
+            }
+        }
+    else
+        cover();
 }
 
-genericServoBracket ($fn=100);
-
+genericServoBracket($fn = 100);
