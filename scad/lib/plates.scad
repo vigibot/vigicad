@@ -20,9 +20,11 @@ M2DIAMETER  = 2 + HOLEMARGIN;
 M25DIAMETER = 2.5 + HOLEMARGIN;
 M3DIAMETER  = 3 + HOLEMARGIN;
 
-MAINPLATE_SX  = 95;
-MAINPLATE_SY  = 60;
-MAINPLATE_SZ  = 3;
+MAINPLATE_SX    = 95;
+MAINPLATE_SY    = 60;
+MAINPLATE_SZ    = 3;
+MAINPLATE_BW_SX = MAINPLATE_SX + 20;
+MAINPLATE_BW_SY = MAINPLATE_SY * 2;
 
 HP_BASE_SX   = 13.5 ;
 HP_BASE_SY   = MAINPLATE_SY ;
@@ -93,6 +95,59 @@ module plate ( mirrorXYHoles=[], noMirrorHoles=[] ) {
     }
 }
 
+module plateBigWheels ( mirrorXYHoles=[], noMirrorHoles=[] ) {
+    difference () {
+        // Row shape
+        mirrorXY()
+            plateShape( MAINPLATE_BW_SX/2, MAINPLATE_BW_SY/2, MAINPLATE_SZ );
+
+        // Bevels
+        mirrorXY()
+            plateBevel( MAINPLATE_BW_SX/2, MAINPLATE_BW_SY/2, MAINPLATE_SZ, RADIUSCORNERS );
+
+        // Holes with no mirroring
+        screwArray ( flatten(noMirrorHoles) );
+
+        // Holes with double mirroring
+        mirrorXY()
+            screwArray( flatten(mirrorXYHoles) );
+
+        // Left and right rectangular holes
+        mirrorXY()
+            translate([0, MAINPLATE_SY/2, -MAINPLATE_SZ/2])
+                cube([29.5, MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ]);
+
+        // Front and rear rectangular holes
+        mirrorXY()
+            translate([MAINPLATE_SX/2, 0, -MAINPLATE_SZ/2])
+                cube([MAINPLATE_BW_SX/2 - MAINPLATE_SX/2, MAINPLATE_SY/2, MAINPLATE_SZ]);
+
+        // Left and right bevels
+        mirrorXY() {
+            translate([-29.5, MAINPLATE_BW_SY/2, 0]) {
+                bevelCutArc( RADIUSCORNERS, MAINPLATE_SZ );
+                rotate([90, 270, 0])
+                    bevelCutLinear(MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ);
+            }
+            //translate([0, MAINPLATE_SY/2, 0]) // TODO BUG
+                //rotate([180, 90, 0])
+                    //bevelCutLinear(MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ);
+        }
+
+        // Front and rear bevels
+        mirrorXY() {
+            translate([MAINPLATE_BW_SX/2, -MAINPLATE_SY/2, 0]) {
+                bevelCutArc( RADIUSCORNERS, MAINPLATE_SZ );
+                rotate([270, 90, 90])
+                    bevelCutLinear(MAINPLATE_BW_SX/2 - MAINPLATE_SX/2, MAINPLATE_SZ);
+            }
+            //translate([MAINPLATE_SX/2, 0, 0]) // TODO BUG
+                //rotate([90, 270, 0])
+                    //bevelCutLinear(MAINPLATE_SY/2, MAINPLATE_SZ);
+        }
+    }
+}
+
 module headPanPlate ( mirrorXHoles=[], noMirrorHoles=[] ) {
     difference() {
         headPanPlateShape();
@@ -121,6 +176,12 @@ module toolPlate ( plate_sy=TOOL_BASE_SY ) {
 function getMotorsFourHoles() = [
     [M2DIAMETER, 38, 16.5],    // Motors A
     [M2DIAMETER, 20, 16.5],    // Motors B
+];
+
+// Get Vigibot motors holes for big wheels
+function getMotorsFourHolesBigWheels() = [
+    [M2DIAMETER, 52.5, 46.5],  // Motors A
+    [M2DIAMETER, 34.5, 46.5],  // Motors B
 ];
 
 // Get Vigibot raspberry PI holes
@@ -283,7 +344,7 @@ module toolPlateExtrude() {
 // ----------------------------------------
 
 module platesShow() {
-
+/*
     plate(
         mirrorXYHoles = [
             getMotorsFourHoles(),
@@ -293,7 +354,17 @@ module platesShow() {
             getToolFourHoles(),
         ]
     );
-
+*/
+    plateBigWheels(
+        mirrorXYHoles = [
+            getMotorsFourHolesBigWheels(),
+            getRaspberryFourHoles(),
+            getMotorPcbFourHoles(),
+            getOblongFourHoles(),
+            getToolFourHoles(),
+        ]
+    );
+/*
     toolPlateTargetLocation() {
         toolPlate ();
         mirrorX()
@@ -307,15 +378,16 @@ module platesShow() {
             mirrorX()
             plateShape(20,20,2);
     }
+*/
 }
 
 // 3D printer mode
 platesShow( $fn=100, $bevel=true );
 
 // Laser cut mode
-translate( [0,0,-30] )
-color( "silver" )
-platesShow( $fn=100, $bevel=false );
+//translate( [0,0,-30] )
+//color( "silver" )
+//platesShow( $fn=100, $bevel=false );
 
 
 //%import( "../../stl/plate_middle.stl" );
