@@ -129,9 +129,9 @@ module plateBigWheels ( mirrorXYHoles=[], noMirrorHoles=[] ) {
                 rotate([90, 270, 0])
                     bevelCutLinear(MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ);
             }
-            //translate([0, MAINPLATE_SY/2, 0]) // TODO BUG
-                //rotate([180, 90, 0])
-                    //bevelCutLinear(MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ);
+            translate([-29.5, MAINPLATE_SY/2, 0]) // TODO BUG
+                rotate([180, 270, 0])
+                    bevelCutLinear(MAINPLATE_BW_SY/2 - MAINPLATE_SY/2, MAINPLATE_SZ);
         }
 
         // Front and rear bevels
@@ -141,9 +141,9 @@ module plateBigWheels ( mirrorXYHoles=[], noMirrorHoles=[] ) {
                 rotate([270, 90, 90])
                     bevelCutLinear(MAINPLATE_BW_SX/2 - MAINPLATE_SX/2, MAINPLATE_SZ);
             }
-            //translate([MAINPLATE_SX/2, 0, 0]) // TODO BUG
-                //rotate([90, 270, 0])
-                    //bevelCutLinear(MAINPLATE_SY/2, MAINPLATE_SZ);
+            translate([MAINPLATE_SX/2, 0, 0]) // TODO BUG
+                rotate([90, 270, 0])
+                    bevelCutLinear(MAINPLATE_SY/2, MAINPLATE_SZ);
         }
     }
 }
