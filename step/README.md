@@ -18,18 +18,9 @@ If you use them and make modifications, share your update.
 You can discuss about 3D model in our discord : https://discord.gg/3KrMHdp
 or on the forum : https://www.robot-maker.com/forum/213-vigibot/
 
+
 #### Todo
 
-- clamp_finger_a.step
-- clamp_finger_b.step
-- clamp_servo_bracket.step
-- clamp_u_bracket.step
-- generic_servo_bracket.step
-- get_up_servo_bracket_a.step
-- head_pan_servo_bracket.step
-- head_servo_camera_bracket_nosmile.step
-- head_servo_camera_bracket_smile.step
-- head_u_bracket.step
 - photoresistor_cap.step
 - plate_bottom.step
 - plate_middle.step
@@ -42,7 +33,20 @@ or on the forum : https://www.robot-maker.com/forum/213-vigibot/
 - servo_finger_b.step
 - usb_bracket.step
 
+
 #### Done
+
+- clamp_finger_a.step
+- clamp_finger_b.step
+- clamp_servo_bracket.step
+- clamp_u_bracket.step
+- generic_servo_bracket.step
+- get_up_servo_bracket_a.step
+- get_up_servo_bracket_b.step
+- head_pan_servo_bracket.step
+- head_servo_camera_bracket_nosmile.step
+- head_servo_camera_bracket_smile.step
+- head_u_bracket.step
 
 
 ### Custom parts added
