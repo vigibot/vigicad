@@ -54,5 +54,7 @@ or on the forum : https://www.robot-maker.com/forum/213-vigibot/
 
 ##### All standard parts 
 
+- n20_motor_holder.step
+
 ##### Custom parts 
 
