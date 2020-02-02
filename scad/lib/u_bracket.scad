@@ -19,7 +19,7 @@ PRECISION=100;
 $fn = PRECISION;
 
 BEVEL = 1.5;
-AXIS_POS_Z = 22;
+AXIS_POS_Z = 19;
 MAIN_W = 12;
 MAIN_T = 5; // Thickness
 ARM_W = 12;
@@ -200,7 +200,7 @@ module uBracket( axisZ=AXIS_POS_Z ) {
 //
 // ------------------------------
 
- uBracket( 22 );
-%uBracketServo( 22, 40 );
+ uBracket( AXIS_POS_Z );
+%uBracketServo( AXIS_POS_Z, 40 );
 
 
