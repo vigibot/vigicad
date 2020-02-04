@@ -9,7 +9,7 @@
 
 ### All pieces assembled for the standard Vigibot
 
-![Standard Vigibot](https://github.com/vigibot/vigicad/blob/master/images/minus_psu.png)
+![Standard Vigibot](https://github.com/vigibot/vigicad/blob/master/images/Minus render-2.png)
 
 ### Parts list
 
