@@ -4,7 +4,7 @@
 
 ### All pieces assembled for the standard Vigibot
 
-![Standard Vigibot](https://github.com/vigibot/vigicad/blob/master/images/Minus%20render-2.png)
+![Standard Minus](https://github.com/vigibot/vigicad/blob/master/images/Minus%20render-2.png)
 
 ### Parts list
 
@@ -31,20 +31,23 @@
   - The Geekworm Power Pack V1.0 (blue PCB) need a larger hack to get usable
     - This modification solve the charger that does not start after a power cut
       - https://brousant.nl/jm3/elektronica/105-geekworm-ups-for-raspberry-pi-simple-modification-detailed
+      
+- 1S Batterie with BMS included
+   - 
 
 - 3D printed parts, screws, nuts and standoffs 
-  - 3D printed parts : 4  ( Top, middle, bottom and rear plate )
-  - 12mm length M2.5 male standoffs between the Raspberry PI and UPS hat board : 4
-  - 25mm length M2.5 male standoffs between the UPS hat board and middle plate : 4
-  - 10mm length M2.5 female standoffs between the middle plate and bottom plate : 4
-  - 5mm length M2.5 male standoffs between the Raspberry PI board and top plate : 4
-  - 6 mm M2.5 screw : 10 ( 4 top plate / 4 bottom plate / 2 middle plate)
-  - 8 or 10 mm M2.5 screw to fix motor board : 2 
-  - M2.5 nut : 6 ( 4 for the motor board / 2 middle plate)
-  - 8mm length M2 screw to fix the back plate on the middle plate : 3 
-  - M2 nut : 3
-  Full kit : https://www.robot-maker.com/shop/kits-robots/425-kit-chassis-4wd-minus-425.html
-
+  - Full kit : https://www.robot-maker.com/shop/kits-robots/425-kit-chassis-4wd-minus-425.html
+  - List :
+    - 3D printed parts : 4  ( Top, middle, bottom and rear plate )
+    - 12mm length M2.5 male standoffs between the Raspberry PI and UPS hat board : 4
+    - 25mm length M2.5 male standoffs between the UPS hat board and middle plate : 4
+    - 10mm length M2.5 female standoffs between the middle plate and bottom plate : 4
+    - 5mm length M2.5 male standoffs between the Raspberry PI board and top plate : 4
+    - 6 mm M2.5 screw : 10 ( 4 top plate / 4 bottom plate / 2 middle plate)
+    - 8 or 10 mm M2.5 screw to fix motor board : 2 
+    - M2.5 nut : 6 ( 4 for the motor board / 2 middle plate)
+    - 8mm length M2 screw to fix the back plate on the middle plate : 3 
+    - M2 nut : 3
 
 #### Motorization 
 
@@ -71,15 +74,17 @@
     - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
     
 - 3D printed parts, screws, nuts and standoffs 
-  - 3D printed parts : 3 or 4 (Smiling head, pan plate, tilt bracket, and 4th is an optional protection to protect camera lens)
-  - 10mm or 12mm length M2.5 screw  : 2 ( to fix pan plate to the rest of the robot)
-  - M2.5 nut : 2
-  - 5 or 6 mm M2 screw : 1 
-  - 8 mm M2 screw : 2  ( to fix 270° servo on the pan plate)
-  - 14 or 16 mm M2 screw : 2 ( to fix 180° servo in the head)
-  - 20 mm M2 screw : 4 ( for camera assembly on the head ) 
-  - M2 nut : 10 ( 8 for the camera, 2 to fix the servo on the pan plate )
-  full kit : https://www.robot-maker.com/shop/kits-robots/88-kit-tourelle-pan-tilt-88.html
+  - Full kit : https://www.robot-maker.com/shop/kits-robots/88-kit-tourelle-pan-tilt-88.html
+  - List :
+    - 3D printed parts : 3 or 4 (Smiling head, pan plate, tilt bracket, and 4th is an optional protection to protect camera lens)
+    - 10mm or 12mm length M2.5 screw  : 2 ( to fix pan plate to the rest of the robot)
+    - M2.5 nut : 2
+    - 5 or 6 mm M2 screw : 1 
+    - 8 mm M2 screw : 2  ( to fix 270° servo on the pan plate)
+    - 14 or 16 mm M2 screw : 2 ( to fix 180° servo in the head)
+    - 20 mm M2 screw : 4 ( for camera assembly on the head ) 
+    - M2 nut : 10 ( 8 for the camera, 2 to fix the servo on the pan plate )
+ 
  
 
 #### Clamp assembly
@@ -87,14 +92,16 @@
 - 180° servo SG90 servo : 2
   - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
     
-- 3D printed parts, screws and nuts  
-  - 3D printed parts : 4 
-  - 5 or 6 mm M2 screw : 1 
-  - 8 mm M2 screw : 3  
-  - 10 mm M2 screw : 1 
-  - 14 mm M2 screw : 5 
-  - M2 nut : 2 
-  full kit : https://www.robot-maker.com/shop/kits-robots/423-kit-pince-minus-423.html
+- 3D printed parts, screws and nuts 
+  - Full kit : https://www.robot-maker.com/shop/kits-robots/423-kit-pince-minus-423.html
+  - List :
+    - 3D printed parts : 4 
+    - 5 or 6 mm M2 screw : 1 
+    - 8 mm M2 screw : 3  
+    - 10 mm M2 screw : 1 
+    - 14 mm M2 screw : 5 
+    - M2 nut : 2 
+  
   
 #### Lateral arms
 
@@ -102,19 +109,23 @@
   - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
     
 - 3D printed parts, screws and nuts  
-  - 3D printed parts : 4 ( left and right servo holder, and left and right lateral arms)
-  - 8 mm M2 screw : 2 ( to fix lateral arms on the servo )
-  - 14 mm M2.5 screw : 2 ( to fix servo holders on the rest of the robot it replaces 8mm M2.5 screws)
-  - M2.5 nut : 2  ( to fix servo holders on the rest of the robot, use 8mm M2.5 screws previously removed, wich was already on your robot) 
-  ( use screws provide with the servo to fix the servo on the servo holder)
-  full kit : https://www.robot-maker.com/shop/kits-robots/424-kit-bras-lateraux-minus-424.html
+  - Full kit : https://www.robot-maker.com/shop/kits-robots/424-kit-bras-lateraux-minus-424.html
+  - List :
+    - 3D printed parts : 4 ( left and right servo holder, and left and right lateral arms)
+    - 8 mm M2 screw : 2 ( to fix lateral arms on the servo )
+    - 14 mm M2.5 screw : 2 ( to fix servo holders on the rest of the robot it replaces 8mm M2.5 screws)
+    - M2.5 nut : 2  ( to fix servo holders on the rest of the robot, use 8mm M2.5 screws previously removed, wich was already on your robot) 
+    - Note : use the long screws provided with servomotors to fix the servomotors on the servo holder
+  
   
 #### Charge station assembly
 
-- A micro USB magnetic cable
+- A USB magnetic cable with magnetic plug
   - https://www.robot-maker.com/shop/alimentation/335-cable-usb-magnetique.html
+  - https://www.robot-maker.com/shop/alimentation/336-embout-magnetique-micro-usb-336.html
 - 3D printed part : 
-  https://www.robot-maker.com/forum/topic/13134-station-de-charge-pour-robot-de-type-minus/
+  - https://www.robot-maker.com/forum/topic/13134-station-de-charge-pour-robot-de-type-minus/
+![Charging station](https://www.robot-maker.com/forum/uploads/monthly_05_2020/post-16643-0-75716800-1589183455.png)
 
   
 #### Optionnal add ons
