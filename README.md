@@ -21,17 +21,12 @@
   
 - 30cm Raspberry PI camera cable
   - https://www.robot-maker.com/shop/composants/329-nappe-raspberry-pi.html#/92-longueur-30cm
-  
-- A reliable Raspberry PI UPS hat board, it's hard to find at time of writing
-  - The Geekworm Power Pack Pro V1.1 (red PCB) need a small hack to get reliable especially with a magnetic cable
-    - Our modification solve the power shutdown when there is a short power cut
-      - Remove the comparator U3
-      - You can remove the capacitor C12 and resistors R23 to R27 wich are useless without U3
-      - Don't remove R4 and R5
-  - The Geekworm Power Pack V1.0 (blue PCB) need a larger hack to get usable
-    - This modification solve the charger that does not start after a power cut
-      - https://brousant.nl/jm3/elektronica/105-geekworm-ups-for-raspberry-pi-simple-modification-detailed
-      
+
+- A reliable Raspberry PI UPS hat board, there is only one at time of writing
+  - The Geekworm / U-geek UPS Hat V3
+    - https://www.amazon.fr/gp/product/B089NF1NHS
+    - https://fr.aliexpress.com/item/4001113371912.html
+
 - 1S Batterie with BMS included
    - 
 
@@ -63,79 +58,74 @@
 - Feetech 2ch motor controller (provided with cables) 
   - https://www.robot-maker.com/shop/drivers-d-actionneurs/280-driver-convertisseur-moteur-cc-servomoteur.html
 
-
 #### Head assembly
 
 - Two "SG90" type micro servo
   - 270° servo is highly recommended for the pan axis : 1
     - https://www.robot-maker.com/shop/moteurs-et-actionneurs/370-servomoteur-9g-270-370.html
-    
+
   - 180° servo is good for the tilt axis : 1
     - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
-    
-- 3D printed parts, screws, nuts and standoffs 
+
+- 3D printed parts, screws, nuts and standoffs
   - Full kit : https://www.robot-maker.com/shop/kits-robots/88-kit-tourelle-pan-tilt-88.html
   - List :
     - 3D printed parts : 3 or 4 (Smiling head, pan plate, tilt bracket, and 4th is an optional protection to protect camera lens)
     - 10mm or 12mm length M2.5 screw  : 2 ( to fix pan plate to the rest of the robot)
     - M2.5 nut : 2
     - 5 or 6 mm M2 screw : 1 
-    - 8 mm M2 screw : 2  ( to fix 270° servo on the pan plate)
+    - 8 mm M2 screw : 2  (to fix 270° servo on the pan plate)
     - 14 or 16 mm M2 screw : 2 ( to fix 180° servo in the head)
-    - 20 mm M2 screw : 4 ( for camera assembly on the head ) 
-    - M2 nut : 10 ( 8 for the camera, 2 to fix the servo on the pan plate )
- 
- 
+    - 20 mm M2 screw : 4 (for camera assembly on the head)
+    - M2 nut : 10 (8 for the camera, 2 to fix the servo on the pan plate)
 
 #### Clamp assembly
 
 - 180° servo SG90 servo : 2
   - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
-    
-- 3D printed parts, screws and nuts 
+
+- 3D printed parts, screws and nuts
   - Full kit : https://www.robot-maker.com/shop/kits-robots/423-kit-pince-minus-423.html
   - List :
-    - 3D printed parts : 4 
-    - 5 or 6 mm M2 screw : 1 
-    - 8 mm M2 screw : 3  
-    - 10 mm M2 screw : 1 
-    - 14 mm M2 screw : 5 
-    - M2 nut : 2 
-  
-  
+    - 3D printed parts : 4
+    - 5 or 6 mm M2 screw : 1
+    - 8 mm M2 screw : 3
+    - 10 mm M2 screw : 1
+    - 14 mm M2 screw : 5
+    - M2 nut : 2
+
 #### Lateral arms
 
 - 180° servo SG90 servo : 2
   - https://www.robot-maker.com/shop/moteurs-et-actionneurs/18-servomoteur-9g-18.html
-    
-- 3D printed parts, screws and nuts  
+
+- 3D printed parts, screws and nuts
   - Full kit : https://www.robot-maker.com/shop/kits-robots/424-kit-bras-lateraux-minus-424.html
   - List :
-    - 3D printed parts : 4 ( left and right servo holder, and left and right lateral arms)
-    - 8 mm M2 screw : 2 ( to fix lateral arms on the servo )
-    - 14 mm M2.5 screw : 2 ( to fix servo holders on the rest of the robot it replaces 8mm M2.5 screws)
-    - M2.5 nut : 2  ( to fix servo holders on the rest of the robot, use 8mm M2.5 screws previously removed, wich was already on your robot) 
+    - 3D printed parts : 4 (left and right servo holder, and left and right lateral arms)
+    - 8 mm M2 screw : 2 (to fix lateral arms on the servo)
+    - 14 mm M2.5 screw : 2 (to fix servo holders on the rest of the robot it replaces 8mm M2.5 screws)
+    - M2.5 nut : 2 (to fix servo holders on the rest of the robot, use 8mm M2.5 screws previously removed, wich was already on your robot) 
     - Note : use the long screws provided with servomotors to fix the servomotors on the servo holder
-  
-  
+
 #### Charge station assembly
 
 - A USB magnetic cable with magnetic plug
   - https://www.robot-maker.com/shop/alimentation/335-cable-usb-magnetique.html
   - https://www.robot-maker.com/shop/alimentation/336-embout-magnetique-micro-usb-336.html
-- 3D printed part : 
-  - https://www.robot-maker.com/forum/topic/13134-station-de-charge-pour-robot-de-type-minus/
+- 3D printed part :
+  - https://www.robot-maker.com/forum/topic/13134-station-de-charge-pour-robot-de-type-minus
+
 ![Charging station](https://www.robot-maker.com/forum/uploads/monthly_05_2020/post-16643-0-75716800-1589183455.png)
 
-  
 #### Optionnal add ons
-- 40mm fan for the top plate  https://www.amazon.fr/gp/product/B07D5QBFLK/ref=ppx_yo_dt_b_asin_title_o01_s00 ( use top plate with fan hole in this case) 
+- 40mm fan for the top plate  https://www.amazon.fr/gp/product/B07D5QBFLK/ref=ppx_yo_dt_b_asin_title_o01_s00 ( use top plate with fan hole in this case)
 - Leds to show if someone is using the robot or not
 - Cables to manually control the IR led state on the camera
-  
- ### Notes
+
+### Notes
 
 - All stl files are provided, you will need 3D printer to print them. ( But if you don't have one you can buy the parts you need on Robot Maker)
 - All sources files are provided. They are made on openscad. You will need The OpenSCAD open source software available at https://www.openscad.org to open or customize SCAD files
-- Step files are also provided to be use as raw file material for other software if you want make modification with your own prefered software. 
+- Step files are also provided to be use as raw file material for other software if you want make modification with your own prefered software.
 - This French video can help to better understand how to assemble the robot : https://youtu.be/9Eja0gG4bhI
