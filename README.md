@@ -116,8 +116,6 @@
 - 3D printed part :
   - https://www.robot-maker.com/forum/topic/13134-station-de-charge-pour-robot-de-type-minus
 
-![Charging station](https://www.robot-maker.com/forum/uploads/monthly_05_2020/post-16643-0-75716800-1589183455.png)
-
 #### Optionnal add ons
 - 40mm fan for the top plate  https://www.amazon.fr/gp/product/B07D5QBFLK/ref=ppx_yo_dt_b_asin_title_o01_s00 ( use top plate with fan hole in this case)
 - Leds to show if someone is using the robot or not
